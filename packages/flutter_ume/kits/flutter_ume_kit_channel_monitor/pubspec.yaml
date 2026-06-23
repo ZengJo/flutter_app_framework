@@ -2,6 +2,7 @@ name: flutter_ume_kit_channel_monitor
 description: channel monitor kit for flutter_ume
 version: 0.0.1
 homepage: https://github.com/bytedance/flutter_ume
+publish_to: none
 
 environment:
   sdk: ">=2.12.0 <4.0.0"
@@ -10,7 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_ume: ^1.0.1
+  flutter_ume:
+    path: ../../../flutter_ume
   rxdart: ^0.27.3
 
 dev_dependencies:

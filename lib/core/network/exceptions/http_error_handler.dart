@@ -1,4 +1,4 @@
-import 'package:flutter_app_framework/shared/widgets/feedback/app_toast.dart';
+import '../../../shared/widgets/feedback/app_toast.dart';
 
 /// 处理后端非 200 业务状态码
 class ResponseErrorHandler {

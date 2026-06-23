@@ -3,22 +3,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_app_framework/app/di/page_registry.dart';
-import 'package:flutter_app_framework/shared/widgets/layout/app_scaffold.dart';
+
+import '../../../app/di/page_registry.dart';
+import '../layout/app_scaffold.dart';
 
 /// 所有页面都需要继承这个
 /// 泛型 S: 状态类型,页面数据层
 /// 泛型 VM: ViewModel 类型 (必须继承 StateNotifier<S>),页面逻辑层
-abstract class BasePageStatefulWidget<S, VM extends StateNotifier<S>>
+abstract class BaseRiverpodPage<S, VM extends StateNotifier<S>>
     extends ConsumerStatefulWidget {
-  const BasePageStatefulWidget({super.key});
+  const BaseRiverpodPage({super.key});
 
   /// 每个页面必须提供自己的 provider
   StateNotifierProvider<VM, S> get provider;
 }
 
-abstract class BaseState<
-  T extends BasePageStatefulWidget<S, VM>,
+abstract class BaseRiverpodState<
+  T extends BaseRiverpodPage<S, VM>,
   S,
   VM extends StateNotifier<S>
 >
@@ -110,7 +111,7 @@ abstract class BaseState<
   Widget? get navigatorTitleWidget => null;
 
   /// 标题栏颜色
-  Color? get navigatorTitleColor => Color(0xFF333333);
+  Color? get navigatorTitleColor => const Color(0xFF333333);
 
   /// 返回按钮
   Widget? get navigatorBackWidget => null;

@@ -3,7 +3,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app_framework/shared/widgets/images/app_cached_image.dart';
+
+import 'app_cached_image.dart';
 
 class AppImage extends StatefulWidget {
   const AppImage({

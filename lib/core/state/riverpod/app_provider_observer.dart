@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_app_framework/core/logger/app_logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../logger/app_logger.dart';
 
 /// Central Riverpod observer for logging and diagnostics.
 final class AppProviderObserver extends ProviderObserver {

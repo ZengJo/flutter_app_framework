@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_app_framework/shared/widgets/gestures/app_tap_area.dart';
-import 'package:flutter_app_framework/shared/widgets/images/app_image.dart';
+
+import '../gestures/app_tap_area.dart';
+import '../images/app_image.dart';
 
 ///顶级父类容器包含顶部视图
 ///{navigatorTitle}导航栏标题
@@ -105,9 +106,7 @@ class AppScaffold extends StatelessWidget {
                   Center(
                     child: AppTapArea(
                       behavior: HitTestBehavior.opaque,
-                      child: AppImage(
-                        src: navigatorBackIconPath ?? "",
-                      ),
+                      child: AppImage(src: navigatorBackIconPath ?? ""),
                       onTap: () {
                         if (navigatorBackPressed != null) {
                           navigatorBackPressed!();

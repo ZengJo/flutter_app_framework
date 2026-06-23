@@ -1,9 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app_framework/app/config/app_globals.dart';
-import 'package:flutter_app_framework/shared/widgets/text/app_text.dart';
-import 'package:flutter_app_framework/core/device/device_info_service.dart';
+
+import '../../../app/config/app_globals.dart';
+import '../../../core/device/device_info_service.dart';
+import '../text/app_text.dart';
 
 class AppToast {
   ///toast overlay entry

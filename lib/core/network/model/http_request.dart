@@ -1,16 +1,17 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_app_framework/core/storage/storage_keys.dart';
-import 'package:flutter_app_framework/core/network/exceptions/http_error_handler.dart';
-import 'package:flutter_app_framework/core/network/headers/request_headers.dart';
-import 'package:flutter_app_framework/core/network/client/http_client.dart';
-import 'package:flutter_app_framework/core/network/offline_queue/offline_request.dart';
-import 'package:flutter_app_framework/core/network/utils/idempotency_key_generator.dart';
-import 'package:flutter_app_framework/shared/widgets/feedback/loading_overlay.dart';
-import 'package:flutter_app_framework/core/utils/input_validator.dart';
-import 'package:flutter_app_framework/core/storage/preferences_service.dart';
-import 'package:flutter_app_framework/shared/widgets/feedback/app_toast.dart';
+
+import '../../../shared/widgets/feedback/app_toast.dart';
+import '../../../shared/widgets/feedback/loading_overlay.dart';
+import '../../storage/preferences_service.dart';
+import '../../storage/storage_keys.dart';
+import '../../utils/input_validator.dart';
+import '../client/http_client.dart';
+import '../exceptions/http_error_handler.dart';
+import '../headers/request_headers.dart';
+import '../offline_queue/offline_request.dart';
+import '../utils/idempotency_key_generator.dart';
 
 const String defaultBaseUrl = 'https://api.ymdq.com';
 
@@ -36,7 +37,8 @@ Future<dynamic> request(
 }) async {
   HttpClient.setLoading(isLoading);
 
-  final finalIdempotencyKey = idempotencyKey ?? IdempotencyKeyGenerator.generate();
+  final finalIdempotencyKey =
+      idempotencyKey ?? IdempotencyKeyGenerator.generate();
   final finalPriority = priority ?? _defaultPriority(method);
   final finalCategory = category ?? _defaultCategory(method);
 
@@ -96,7 +98,9 @@ QueuePriority _defaultPriority(RequestMethod method) {
 }
 
 QueueCategory _defaultCategory(RequestMethod method) {
-  return method == RequestMethod.get ? QueueCategory.sync : QueueCategory.userAction;
+  return method == RequestMethod.get
+      ? QueueCategory.sync
+      : QueueCategory.userAction;
 }
 
 Future<Response<dynamic>> _sendRequest(
@@ -109,22 +113,34 @@ Future<Response<dynamic>> _sendRequest(
 }) {
   return switch (method) {
     RequestMethod.head => HttpClient.instance.head(url, options: options),
-    RequestMethod.get => HttpClient.instance.get(url, parameters: params, options: options),
-    RequestMethod.put => HttpClient.instance.put(url, parameters: params, options: options),
-    RequestMethod.delete => HttpClient.instance.delete(url, parameters: params, options: options),
+    RequestMethod.get => HttpClient.instance.get(
+      url,
+      parameters: params,
+      options: options,
+    ),
+    RequestMethod.put => HttpClient.instance.put(
+      url,
+      parameters: params,
+      options: options,
+    ),
+    RequestMethod.delete => HttpClient.instance.delete(
+      url,
+      parameters: params,
+      options: options,
+    ),
     RequestMethod.post => HttpClient.instance.post(
-        url,
-        parameters: params,
-        options: options,
-        cancelToken: cancelToken,
-        onSendProgress: onSendProgress,
-      ),
+      url,
+      parameters: params,
+      options: options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+    ),
     RequestMethod.upload => HttpClient.instance.upload(
-        url,
-        params: Map<String, dynamic>.from(params as Map),
-        options: options,
-        onSendProgress: onSendProgress,
-      ),
+      url,
+      params: Map<String, dynamic>.from(params as Map),
+      options: options,
+      onSendProgress: onSendProgress,
+    ),
   };
 }
 

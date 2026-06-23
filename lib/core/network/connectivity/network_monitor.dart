@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter_app_framework/core/logger/app_logger.dart';
 
+import '../../logger/app_logger.dart';
 import 'network_state.dart';
 
 /// 网络监控

@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_app_framework/features/example/presentation/pages/order_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_app_framework/app/config/app_globals.dart';
-import 'package:flutter_app_framework/core/network/headers/request_headers.dart';
-import 'package:flutter_app_framework/core/network/providers/dio_interceptors_provider.dart';
-import 'package:flutter_app_framework/core/network/providers/dio_provider.dart';
-import 'package:flutter_app_framework/core/network/providers/network_providers.dart';
-import 'package:flutter_app_framework/core/network/providers/offline_queue_provider.dart';
-import 'package:flutter_app_framework/app/bootstrap/application_runner.dart';
-import 'package:flutter_app_framework/core/device/device_info_service.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+
+import '../../core/device/device_info_service.dart';
+import '../../core/network/headers/request_headers.dart';
+import '../../core/network/providers/dio_interceptors_provider.dart';
+import '../../core/network/providers/dio_provider.dart';
+import '../../core/network/providers/network_providers.dart';
+import '../../core/network/providers/offline_queue_provider.dart';
+import '../../features/example/presentation/pages/order_page.dart';
+import '../config/app_globals.dart';
+import 'application_runner.dart';
 
 /// 应用启动入口：只负责启动顺序，不放业务逻辑。
 class ApplicationBootstrapper {
@@ -28,7 +29,7 @@ class ApplicationBootstrapper {
     WidgetsFlutterBinding.ensureInitialized();
 
     await _initBase();
-    _container = _initProviders();
+    _container = _initDependencies();
     _run(const OrderPage());
   }
 
@@ -40,7 +41,7 @@ class ApplicationBootstrapper {
     RequestHeaders.clearCache();
   }
 
-  ProviderContainer _initProviders() {
+  ProviderContainer _initDependencies() {
     final container = ProviderContainer();
 
     // 先初始化网络状态，再初始化 Dio 和依赖 Dio 的模块。

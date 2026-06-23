@@ -2,6 +2,7 @@ name: flutter_ume_kit_console
 description: Show debugPrint kit for flutter_ume.
 version: 1.1.0
 homepage: https://github.com/bytedance/flutter_ume
+publish_to: none
 
 environment:
   sdk: ">=2.12.0 <4.0.0"
@@ -11,9 +12,10 @@ dependencies:
   flutter:
     sdk: flutter
   tuple: ^2.0.0
-  share: ^2.0.4
+  share_plus: ^12.0.1
   shared_preferences: ^2.0.6
-  flutter_ume: ">=1.0.0 <2.0.0"
+  flutter_ume:
+    path: ../../../flutter_ume
 
 dev_dependencies:
   flutter_test:

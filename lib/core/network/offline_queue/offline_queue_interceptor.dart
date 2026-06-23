@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_app_framework/core/network/connectivity/network_monitor.dart';
 import 'package:uuid/uuid.dart';
 
+import '../connectivity/network_monitor.dart';
 import 'offline_queue_manager.dart';
 import 'offline_request.dart';
 

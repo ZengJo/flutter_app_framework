@@ -1,24 +1,36 @@
 import 'package:flutter/material.dart';
 
-/// Application-level theme definitions.
+import 'app_theme_colors.dart';
+
 class AppTheme {
   const AppTheme._();
 
   static ThemeData light() {
     return ThemeData(
       useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-      scaffoldBackgroundColor: Colors.white,
+
+      extensions: const [
+        AppThemeColors(
+          primaryButton: Color(0xFFFF6B00),
+          secondaryButton: Color(0xFFFFA726),
+          titleText: Color(0xFF222222),
+          bodyText: Color(0xFF666666),
+        ),
+      ],
     );
   }
 
   static ThemeData dark() {
     return ThemeData(
-      useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: Colors.blue,
-        brightness: Brightness.dark,
-      ),
+      brightness: Brightness.dark,
+      extensions: const [
+        AppThemeColors(
+          primaryButton: Color(0xFF2196F3),
+          secondaryButton: Color(0xFF64B5F6),
+          titleText: Colors.white,
+          bodyText: Color(0xFFCCCCCC),
+        ),
+      ],
     );
   }
 }

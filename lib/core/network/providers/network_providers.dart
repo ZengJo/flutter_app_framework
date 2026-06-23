@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_app_framework/core/network/connectivity/network_monitor.dart';
-import 'package:flutter_app_framework/core/network/connectivity/network_state.dart';
+
+import '../connectivity/network_monitor.dart';
+import '../connectivity/network_state.dart';
 
 /// 网络监控提供器
 final networkMonitorProvider = Provider<NetworkMonitor>((ref) {

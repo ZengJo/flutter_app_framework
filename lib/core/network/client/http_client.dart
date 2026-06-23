@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_app_framework/core/network/client/dio_holder.dart';
+
+import 'dio_holder.dart';
 
 /// Dio 轻量封装：去掉重复分支，统一通过 dio.request 处理普通请求。
 class HttpClient {

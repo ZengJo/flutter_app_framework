@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app_framework/core/logger/app_logger.dart';
+
+import '../../core/logger/app_logger.dart';
 
 class AppNavigator {
   AppNavigator._();
@@ -114,6 +115,63 @@ class AppNavigator {
       final args = ModalRoute.of(context)?.settings.arguments;
       onChanged(args is T ? args : null);
     });
+  }
+
+  static Future<T?> pushNamed<T>(
+    BuildContext context,
+    String routeName, {
+    Object? arguments,
+  }) async {
+    if (RouteObserverService.contains(routeName) ||
+        _pushingRoutes.contains(routeName)) {
+      AppLogger.info('$routeName 已在栈中或正在跳转，忽略重复请求');
+      return null;
+    }
+
+    _pushingRoutes.add(routeName);
+
+    try {
+      return Navigator.of(
+        context,
+        rootNavigator: true,
+      ).pushNamed<T>(routeName, arguments: arguments);
+    } finally {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _pushingRoutes.remove(routeName);
+      });
+    }
+  }
+
+  static Future<T?> pushReplacementNamed<T, TO>(
+    BuildContext context,
+    String routeName, {
+    Object? arguments,
+    TO? result,
+  }) {
+    return Navigator.of(
+      context,
+      rootNavigator: true,
+    ).pushReplacementNamed<T, TO>(
+      routeName,
+      arguments: arguments,
+      result: result,
+    );
+  }
+
+  static Future<T?> pushNamedAndRemoveUntil<T>(
+    BuildContext context,
+    String routeName, {
+    Object? arguments,
+    RoutePredicate? predicate,
+  }) {
+    return Navigator.of(
+      context,
+      rootNavigator: true,
+    ).pushNamedAndRemoveUntil<T>(
+      routeName,
+      predicate ?? (_) => false,
+      arguments: arguments,
+    );
   }
 }
 

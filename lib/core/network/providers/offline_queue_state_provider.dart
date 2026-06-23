@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_app_framework/core/network/offline_queue/offline_queue_storage.dart';
-import 'package:flutter_app_framework/core/network/providers/offline_queue_provider.dart';
 
 import '../offline_queue/offline_queue_state.dart';
+import '../offline_queue/offline_queue_storage.dart';
+import 'offline_queue_provider.dart';
 
 /// 离线队列状态提供器
 final offlineQueueStateProvider = StreamProvider<OfflineQueueState>((ref) {

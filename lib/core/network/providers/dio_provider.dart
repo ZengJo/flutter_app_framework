@@ -1,16 +1,18 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_app_framework/core/network/interceptors/logger_interceptor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_app_framework/core/network/client/dio_holder.dart';
-import 'package:flutter_app_framework/core/network/client/http_client.dart';
+
+import '../../../app/config/application_config.dart';
+import '../client/dio_holder.dart';
+import '../client/http_client.dart';
+import '../interceptors/logger_interceptor.dart';
 
 /// Dio提供器
 final dioProvider = Provider<Dio>((ref) {
   /// Dio实例
   final dio = Dio(
     BaseOptions(
-      connectTimeout: const Duration(milliseconds: 30000),
-      receiveTimeout: const Duration(milliseconds: 30000),
+      connectTimeout: ApplicationConfig.connectTimeout,
+      receiveTimeout: ApplicationConfig.receiveTimeout,
     ),
   );
 

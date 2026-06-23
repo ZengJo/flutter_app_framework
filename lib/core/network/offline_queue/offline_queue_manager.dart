@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_app_framework/core/logger/app_logger.dart';
-import 'package:flutter_app_framework/core/network/connectivity/network_monitor.dart';
 
+import '../../logger/app_logger.dart';
+import '../connectivity/network_monitor.dart';
 import 'offline_queue_state.dart';
 import 'offline_queue_storage.dart';
 import 'offline_request.dart';

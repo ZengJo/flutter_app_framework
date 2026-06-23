@@ -6,23 +6,23 @@ import 'package:flutter_udid/flutter_udid.dart';
 
 class DeviceInfoService {
   ///设备屏幕宽度
-  static screenWidth(BuildContext context) {
+  static double screenWidth(BuildContext context) {
     return MediaQuery.of(context).size.width;
   }
 
   ///设备屏幕高度
-  static screenHeight(BuildContext context) {
+  static double screenHeight(BuildContext context) {
     return MediaQuery.of(context).size.height;
   }
 
   ///设备顶部刘海高度
-  static top(BuildContext context) {
+  static double top(BuildContext context) {
     double d = MediaQueryData.fromView(View.of(context)).padding.top;
     return d <= 0 ? 12.0 : d;
   }
 
   ///设备底部安全距离
-  static bottom(BuildContext context) {
+  static double bottom(BuildContext context) {
     double d = MediaQueryData.fromView(View.of(context)).padding.bottom;
     return d <= 0 ? 0.0 : d;
 
@@ -30,13 +30,13 @@ class DeviceInfoService {
   }
 
   ///设备左边安全距离
-  static left(BuildContext context) {
+  static double left(BuildContext context) {
     double d = MediaQueryData.fromView(View.of(context)).padding.left;
     return d <= 0 ? 12.0 : d;
   }
 
   ///设备右边安全距离
-  static right(BuildContext context) {
+  static double right(BuildContext context) {
     double d = MediaQueryData.fromView(View.of(context)).padding.right;
     return d <= 0 ? 12.0 : d;
   }

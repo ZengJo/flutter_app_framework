@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:flutter_app_framework/app/config/app_globals.dart';
-import 'package:flutter_app_framework/core/device/device_info_service.dart';
-import 'package:flutter_app_framework/core/logger/app_logger.dart';
-import 'package:flutter_app_framework/core/storage/preferences_service.dart';
+import '../../../app/config/app_globals.dart';
+import '../../device/device_info_service.dart';
+import '../../logger/app_logger.dart';
+import '../../storage/preferences_service.dart';
 
 /// 公共请求头。
 ///

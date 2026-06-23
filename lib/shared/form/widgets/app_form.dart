@@ -2,9 +2,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_app_framework/shared/form/state/form_field_state.dart';
-import 'package:flutter_app_framework/shared/widgets/gestures/app_tap_area.dart';
-import 'package:flutter_app_framework/shared/widgets/text/app_text.dart';
+
+import '../../widgets/gestures/app_tap_area.dart';
+import '../../widgets/text/app_text.dart';
+import '../state/form_field_state.dart';
 
 ///自定义表单
 class AppForm extends StatelessWidget {

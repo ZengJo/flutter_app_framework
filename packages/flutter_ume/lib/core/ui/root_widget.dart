@@ -27,12 +27,14 @@ class UMEWidget extends StatefulWidget {
   const UMEWidget({
     Key? key,
     required this.child,
+    this.icon,
     this.enable = true,
     this.supportedLocales,
     this.localizationsDelegates = defaultLocalizationsDelegates,
   }) : super(key: key);
 
   final Widget child;
+  final Widget? icon;
   final bool enable;
   final Iterable<Locale>? supportedLocales;
   final Iterable<LocalizationsDelegate> localizationsDelegates;
@@ -179,6 +181,7 @@ class _UMEWidgetState extends State<UMEWidget> {
           builder: (_) => Material(
             type: MaterialType.transparency,
             child: _ContentPage(
+              icon: widget.icon,
               key: _contentPageKey,
               refreshChildLayout: () {
                 _replaceChild();
@@ -198,10 +201,11 @@ class _UMEWidgetState extends State<UMEWidget> {
 }
 
 class _ContentPage extends StatefulWidget {
-  const _ContentPage({Key? key, this.refreshChildLayout}) : super(key: key);
+  const _ContentPage({Key? key, this.refreshChildLayout, this.icon})
+      : super(key: key);
 
   final VoidCallback? refreshChildLayout;
-
+  final Widget? icon;
   @override
   _ContentPageState createState() => _ContentPageState();
 }
@@ -283,12 +287,28 @@ class _ContentPageState extends State<_ContentPage> {
 
   Widget _logoWidget() {
     if (_currentSelected != null) {
-      return Container(
-          child: Image(image: _currentSelected!.iconImageProvider),
-          height: 30,
-          width: 30);
+      return SizedBox(
+        height: 30,
+        width: 30,
+        child: Image(
+          image: _currentSelected!.iconImageProvider,
+          fit: BoxFit.contain,
+        ),
+      );
     }
-    return FlutterLogo(size: 40, colors: _showedMenu ? Colors.red : null);
+
+    if (widget.icon != null) {
+      return SizedBox(
+        width: 40,
+        height: 40,
+        child: widget.icon,
+      );
+    }
+
+    return FlutterLogo(
+      size: 40,
+      colors: _showedMenu ? Colors.red : null,
+    );
   }
 
   @override

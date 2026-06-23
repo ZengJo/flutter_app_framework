@@ -1,4 +1,4 @@
-import 'package:flutter_app_framework/core/storage/preferences_service.dart';
+import '../../storage/preferences_service.dart';
 import 'offline_request.dart';
 
 /// 离线队列存储
@@ -23,11 +23,17 @@ class OfflineQueueStorage {
 
   /// 保存队列
   Future<void> saveQueue(List<OfflineRequest> list) async {
-    await PreferencesService.setStringList(_queueKey, list.map((e) => e.encode()).toList());
+    await PreferencesService.setStringList(
+      _queueKey,
+      list.map((e) => e.encode()).toList(),
+    );
   }
 
   /// 保存死亡队列
   Future<void> saveDead(List<OfflineRequest> list) async {
-    await PreferencesService.setStringList(_deadKey, list.map((e) => e.encode()).toList());
+    await PreferencesService.setStringList(
+      _deadKey,
+      list.map((e) => e.encode()).toList(),
+    );
   }
 }

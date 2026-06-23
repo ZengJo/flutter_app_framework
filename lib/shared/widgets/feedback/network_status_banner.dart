@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_app_framework/core/network/providers/network_providers.dart';
-import 'package:flutter_app_framework/core/network/providers/offline_queue_state_provider.dart';
-import 'package:flutter_app_framework/core/device/device_info_service.dart';
+
+import '../../../core/device/device_info_service.dart';
+import '../../../core/network/providers/network_providers.dart';
+import '../../../core/network/providers/offline_queue_state_provider.dart';
 
 /// 网络状态栏
 class NetworkStatusBanner extends ConsumerWidget {

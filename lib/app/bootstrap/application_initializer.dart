@@ -1,4 +1,4 @@
-import 'package:flutter_app_framework/core/logger/app_logger.dart';
+import '../../core/logger/app_logger.dart';
 
 class ApplicationInitTask {
   final int priority;

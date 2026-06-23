@@ -20,6 +20,7 @@
 | `globalKeyNavigatorKey`   | 全局导航 Key，用于在非 Widget 场景下执行页面跳转。           |
 | `PageScope`               | 页面级依赖作用域，用于在页面树中传递页面状态或依赖。         |
 | `AppNavigator`            | 应用导航管理器，统一封装页面跳转、返回、替换等导航操作。     |
+| `AppRouter`               | 应用导航管理路由                                             |
 | `AppPageRoute`            | 自定义页面路由，统一页面切换动画和路由行为。                 |
 | `RouteObserverService`    | 路由监听服务，用于监听页面进入、退出、切换等生命周期。       |
 | `RouteNames`              | 路由名称常量类，统一管理页面路由字符串。                     |
@@ -85,13 +86,12 @@
 
 ## Core / State Classes
 
-| Class / Enum              | 作用                                                       |
-| ------------------------- | ---------------------------------------------------------- |
-| `BaseBloc<Event, State>`  | Bloc 基础类，用于统一扩展 Bloc 的公共能力。                |
-| `BaseEvent`               | Bloc 事件基类，所有 Event 可以继承它，方便统一比较和测试。 |
-| `BaseState`               | Bloc 状态基类，所有 State 可以继承它，方便统一比较和测试。 |
-| `AppProviderObserver`     | Riverpod 状态监听器，用于调试 Provider 创建、更新、销毁。  |
-| `StateManagementStrategy` | 状态管理策略枚举，用于标识当前项目使用 Riverpod 或 Bloc。  |
+| Class / Enum             | 作用                                                       |
+| ------------------------ | ---------------------------------------------------------- |
+| `BaseBloc<Event, State>` | Bloc 基础类，用于统一扩展 Bloc 的公共能力。                |
+| `BaseEvent`              | Bloc 事件基类，所有 Event 可以继承它，方便统一比较和测试。 |
+| `BaseState`              | Bloc 状态基类，所有 State 可以继承它，方便统一比较和测试。 |
+| `AppProviderObserver`    | Riverpod 状态监听器，用于调试 Provider 创建、更新、销毁。  |
 
 ---
 
@@ -167,10 +167,11 @@
 
 ## Shared / Page Classes
 
-| Class                                                    | 作用                                                          |
-| -------------------------------------------------------- | ------------------------------------------------------------- |
-| `BasePageStatefulWidget<S, VM extends StateNotifier<S>>` | 基于 Riverpod 的页面基类，用于统一页面状态和 ViewModel 绑定。 |
-| `BaseState`                                              | 页面状态基类，用于统一页面生命周期、状态读取、刷新逻辑。      |
+| Class | 作用 |
+| `BaseRiverpodPage<S, VM extends StateNotifier<S>>` | Riverpod 页面基类，负责绑定 Provider 与 ViewModel，统一页面结构、生命周期管理和状态管理入口。 |
+| `BaseRiverpodState<T, S, VM extends StateNotifier<S>>` | Riverpod 页面状态基类，负责页面初始化、Provider 状态读取、ViewModel 获取、页面缓存、导航栏配置以及页面容器构建。 |
+| `BaseBlocPage<S, B extends BlocBase<S>>` | Bloc 页面基类，负责创建并注入 Bloc/Cubit，统一页面结构、生命周期管理和状态管理入口。 |
+| `BaseBlocState<T, S, B extends BlocBase<S>>` | Bloc 页面状态基类，负责页面初始化、Bloc 获取、状态监听（BlocListener）、状态刷新（BlocBuilder）、页面缓存、导航栏配置以及页面容器构建。 |
 
 ---
 

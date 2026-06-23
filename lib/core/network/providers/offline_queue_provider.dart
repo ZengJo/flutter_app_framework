@@ -1,8 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_app_framework/core/network/offline_queue/offline_queue_manager.dart';
-import 'package:flutter_app_framework/core/network/providers/dio_provider.dart';
-import 'package:flutter_app_framework/core/network/providers/network_providers.dart';
-import 'package:flutter_app_framework/core/network/providers/offline_queue_state_provider.dart';
+
+import '../offline_queue/offline_queue_manager.dart';
+import 'dio_provider.dart';
+import 'network_providers.dart';
+import 'offline_queue_state_provider.dart';
 
 /// 离线队列管理器提供器
 final offlineQueueManagerProvider = Provider<OfflineQueueManager>((ref) {

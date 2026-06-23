@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_app_framework/app/config/app_globals.dart';
-import 'package:flutter_app_framework/app/config/application_config.dart';
-import 'package:flutter_app_framework/app/theme/app_theme.dart';
-import 'package:flutter_app_framework/app/navigation/app_navigator.dart';
-import 'package:flutter_app_framework/app/bootstrap/application_bootstrapper.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+import 'app/bootstrap/application_bootstrapper.dart';
+import 'app/config/app_globals.dart';
+import 'app/config/application_config.dart';
+import 'app/navigation/app_navigator.dart';
+import 'app/navigation/app_router.dart';
+import 'app/navigation/route_names.dart';
+import 'app/theme/app_theme.dart';
 
 Future<void> main() async {
   await ApplicationBootstrapper.instance.bootstrap();
@@ -29,6 +32,11 @@ class Application extends ConsumerWidget {
       rebuildFactor: RebuildFactors.size,
       builder: (context, child) {
         return MaterialApp(
+          ///这里是路由跳转页面配置，如果不需要路由跳转，则不需要配置
+          initialRoute: RouteNames.example,
+
+          ///这里是路由跳转页面配置，如果不需要路由跳转，则不需要配置
+          onGenerateRoute: AppRouter.onGenerateRoute,
           title: ApplicationConfig.appName,
           navigatorKey: globalKeyNavigatorKey,
           navigatorObservers: [RouteObserverService()],
@@ -38,13 +46,15 @@ class Application extends ConsumerWidget {
           builder: EasyLoading.init(
             builder: (context, child) {
               return MediaQuery(
-                data: MediaQuery.of(context).copyWith(
-                  textScaler: const TextScaler.linear(1),
-                ),
+                data: MediaQuery.of(
+                  context,
+                ).copyWith(textScaler: const TextScaler.linear(1)),
                 child: child ?? const SizedBox.shrink(),
               );
             },
           ),
+
+          ///这里是首页配置，如果不需要首页，则不需要配置，比如登录页，引导页等，路由跳转方式需要注释掉
           home: RefreshConfiguration(
             enableLoadingWhenNoData: false,
             child: startPage,
