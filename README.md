@@ -106,9 +106,10 @@
 
 ## Core / Utils Classes
 
-| Class            | 作用                                                     |
-| ---------------- | -------------------------------------------------------- |
-| `InputValidator` | 输入校验工具类，用于校验手机号、邮箱、密码、非空等规则。 |
+| Class            | 作用                                                                       |
+| ---------------- | -------------------------------------------------------------------------- |
+| `InputValidator` | 输入校验工具类，用于校验手机号、邮箱、密码、非空等规则。                   |
+| `Responsive`     | 响应式尺寸适配工具，根据设计稿宽度自动计算缩放比例，统一适配不同屏幕尺寸。 |
 
 ---
 
@@ -276,6 +277,86 @@ counterProvider 状态更新
         ↓
 ConsumerWidget 自动刷新 UI
 ```
+
+---
+
+# Responsive Usage
+
+`Responsive` 用于统一管理项目中的尺寸适配，根据设计稿宽度自动计算缩放比例。
+
+## 初始化
+
+```dart
+@override
+Widget build(BuildContext context) {
+  Responsive.init(context);
+
+  return const Scaffold(
+    body: ...
+  );
+}
+```
+
+默认设计稿宽度为 **375**。
+
+自定义设计稿：
+
+```dart
+Responsive.init(
+  context,
+  designWidth: 390,
+);
+```
+
+限制缩放范围：
+
+```dart
+Responsive.init(
+  context,
+  designWidth: 375,
+  minScale: 0.85,
+  maxScale: 1.25,
+);
+```
+
+## 使用
+
+```dart
+Container(
+  width: 120.adapt,
+  height: 48.adapt,
+  padding: EdgeInsets.all(16.adapt),
+  margin: EdgeInsets.symmetric(horizontal: 20.adapt),
+  decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(12.adapt),
+  ),
+  child: Text(
+    'Hello',
+    style: TextStyle(
+      fontSize: 16.adapt,
+    ),
+  ),
+)
+```
+
+```dart
+Icon(
+  Icons.home,
+  size: 24.adapt,
+)
+```
+
+## Best Practice
+
+统一使用 `.adapt` 进行尺寸适配：
+
+- width
+- height
+- padding
+- margin
+- fontSize
+- borderRadius
+- iconSize
 
 ---
 
