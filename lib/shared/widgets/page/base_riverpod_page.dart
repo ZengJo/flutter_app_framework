@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../app/di/page_registry.dart';
@@ -35,32 +34,6 @@ abstract class BaseRiverpodState<
 
   /// 子类可控制是否在 tab 中缓存
   bool get keepAlive => true;
-
-  ///通用：读取任何 Provider 的值（不监听）
-  ///R = 返回的结果类型
-  R readValue<R>(ProviderListenable<R> provider) {
-    return ref.read(provider);
-  }
-
-  ///通用：监听任何 Provider 的值
-  ///R = 返回的结果类型
-  R watchValue<R>(ProviderListenable<R> provider) {
-    return ref.watch(provider);
-  }
-
-  /// 通用：读取任何 Provider 的 Notifier（StateNotifier / Notifier / AsyncNotifier）
-  /// N = 返回的 Notifier 类型
-  N readNotifier<N>(ProviderListenable<N> notifierProvider) {
-    return ref.read(notifierProvider);
-  }
-
-  /// 选择性监听任何 Provider 的值，例如我只想监听 User 中的 name 列表，而不是整个 User 对象
-  /// P = Provider 的状态类型
-  /// R = selector 返回的结果类型
-  R selectState<P, R>(ProviderBase<P> provider, R Function(P) selector) {
-    return ref.watch(provider.select(selector));
-  }
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
