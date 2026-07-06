@@ -21,7 +21,7 @@ import 'package:flutter/material.dart';
 /// ```dart
 /// @override
 /// Widget build(BuildContext context) {
-///   Responsive.init(context);
+///   ScreenResponsive.init(context);
 ///
 ///   return Scaffold(
 ///     body: ...
@@ -54,10 +54,10 @@ import 'package:flutter/material.dart';
 /// 等价于：
 ///
 /// ```dart
-/// Responsive.adapt(16);
+/// ScreenResponsive.adapt(16);
 /// ```
-class Responsive {
-  const Responsive._();
+class ScreenResponsive {
+  const ScreenResponsive._();
 
   static double _scale = 1.0;
 
@@ -97,5 +97,5 @@ class Responsive {
 /// ```
 extension ResponsiveSizeExtension on num {
   /// 根据当前屏幕宽度返回适配后的尺寸。
-  double get adapt => Responsive.adapt(this);
+  double get adapt => ScreenResponsive.adapt(this);
 }
