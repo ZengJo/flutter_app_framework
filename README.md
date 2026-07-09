@@ -113,6 +113,194 @@
 
 ---
 
+# Core / Permission
+
+Permission 模块统一管理应用中的权限申请、权限检测、平台适配以及权限状态记录。
+
+整体设计目标：
+
+- 不直接依赖 `permission_handler`
+- 业务层只关心业务权限，不关心 Android / iOS 差异
+- Android 不同版本自动适配
+- 所有权限申请统一入口
+- 支持首次申请记录
+- 支持跳转系统设置
+
+目录结构：
+
+```text
+core/
+└── permission/
+    ├── enum_permission.dart
+    ├── permission_request.dart
+    ├── permission_resolver.dart
+    ├── permission_handler.dart
+    └── permission_request_record.dart
+```
+
+---
+
+## Classes
+
+| Class                     | 作用                                                 |
+| ------------------------- | ---------------------------------------------------- |
+| `PermissionRequest`       | 权限枚举，业务层统一使用的权限类型。                 |
+| `PermissionType`          | 权限分类枚举，用于描述支持的权限类型。               |
+| `PermissionResolver`      | 权限解析器，根据平台和系统版本解析真实权限。         |
+| `PermissionHandler`       | 权限统一管理器，负责申请、检测、跳转系统设置等能力。 |
+| `PermissionRequestRecord` | 权限申请记录管理器，用于记录用户是否申请过某项权限。 |
+
+---
+
+## PermissionRequest
+
+业务层不要直接使用 `Permission`。
+
+统一使用：
+
+```dart
+PermissionRequest.camera
+PermissionRequest.microphone
+PermissionRequest.bluetooth
+PermissionRequest.wifi
+PermissionRequest.photos
+```
+
+这样可以避免：
+
+- Android 权限变化
+- iOS 权限差异
+- Android 13+
+- Android 12+
+- 后续系统升级导致业务代码修改
+
+---
+
+## PermissionResolver
+
+PermissionResolver 专门负责：
+
+根据不同平台解析真实权限。
+
+例如：
+
+Wi-Fi：
+
+```text
+Android
+↓
+
+Location
+```
+
+蓝牙：
+
+```text
+Android 12+
+↓
+
+Bluetooth Scan
+Bluetooth Connect
+```
+
+Android 11 以下：
+
+```text
+Bluetooth
+```
+
+相册：
+
+```text
+Android 13+
+
+↓
+
+Photos
+
+Android 12-
+
+↓
+
+Storage
+```
+
+业务层永远不知道这些差异。
+
+---
+
+## PermissionHandler
+
+统一负责：
+
+- 检查权限
+- 申请权限
+- 多权限申请
+- 权限弹窗
+- 跳转系统设置
+- 判断权限状态
+
+例如：
+
+申请相机权限：
+
+```dart
+final granted =
+    await PermissionHandler.instance.requestPermissionByType(
+  PermissionRequest.camera,
+);
+```
+
+申请多个权限：
+
+```dart
+await PermissionHandler.instance.requestPermissionsByType([
+  PermissionRequest.camera,
+  PermissionRequest.microphone,
+]);
+```
+
+检查权限：
+
+```dart
+final hasPermission =
+    await PermissionHandler.instance.checkPermissionByType(
+  PermissionRequest.bluetooth,
+);
+```
+
+---
+
+## PermissionRequestRecord
+
+用于记录：
+
+> 用户是否已经申请过某个权限。
+
+例如：
+
+```dart
+await PermissionRequestRecord.instance.markRequested(
+    PermissionRequest.camera);
+```
+
+判断：
+
+```dart
+final requested =
+    await PermissionRequestRecord.instance.hasRequested(
+        PermissionRequest.camera);
+```
+
+适用于：
+
+- 首次授权引导
+- 不再重复弹说明页
+- 权限教育页
+- 首次启动流程
+
+---
+
 ## Shared / Form Classes
 
 | Class                | 作用                                                             |
