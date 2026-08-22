@@ -159,6 +159,34 @@ class AppLocalizationsZh extends AppLocalizations {
   String get globalization24Hour => '24 小时制';
 
   @override
+  String get globalizationCurrentConfiguration => '当前全球化配置';
+
+  @override
+  String get globalizationCurrentConfigurationDescription =>
+      '以下为当前 App 实际生效的语言、地区、格式和网络全球化信息。';
+
+  @override
+  String get globalizationLocale => 'Locale';
+
+  @override
+  String get globalizationApiLanguage => 'API 语言';
+
+  @override
+  String get globalizationTextDirection => '文字方向';
+
+  @override
+  String get globalizationLtr => 'LTR（从左到右）';
+
+  @override
+  String get globalizationRtl => 'RTL（从右到左）';
+
+  @override
+  String get globalizationFollowRegion => '跟随地区';
+
+  @override
+  String get globalizationManual => '手动设置';
+
+  @override
   String get languageEnglish => '英语';
 
   @override

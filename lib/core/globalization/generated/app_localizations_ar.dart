@@ -158,10 +158,38 @@ class AppLocalizationsAr extends AppLocalizations {
   String get globalizationImperial => 'إمبراطوري';
 
   @override
-  String get globalization12Hour => '12 ساعة';
+  String get globalization12Hour => 'نظام 12 ساعة';
 
   @override
-  String get globalization24Hour => '24 ساعة';
+  String get globalization24Hour => 'نظام 24 ساعة';
+
+  @override
+  String get globalizationCurrentConfiguration => 'إعدادات العولمة الحالية';
+
+  @override
+  String get globalizationCurrentConfigurationDescription =>
+      'هذه هي قيم اللغة والمنطقة والتنسيق وإعدادات الشبكة المطبقة حاليًا في التطبيق.';
+
+  @override
+  String get globalizationLocale => 'الإعدادات المحلية';
+
+  @override
+  String get globalizationApiLanguage => 'لغة API';
+
+  @override
+  String get globalizationTextDirection => 'اتجاه النص';
+
+  @override
+  String get globalizationLtr => 'LTR (من اليسار إلى اليمين)';
+
+  @override
+  String get globalizationRtl => 'RTL (من اليمين إلى اليسار)';
+
+  @override
+  String get globalizationFollowRegion => 'اتباع المنطقة';
+
+  @override
+  String get globalizationManual => 'إعداد يدوي';
 
   @override
   String get languageEnglish => 'الإنجليزية';

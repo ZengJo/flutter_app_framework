@@ -165,6 +165,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get globalization24Hour => '24-hour';
 
   @override
+  String get globalizationCurrentConfiguration =>
+      'Current Globalization Settings';
+
+  @override
+  String get globalizationCurrentConfigurationDescription =>
+      'These are the language, region, formatting, and network globalization values currently in effect across the app.';
+
+  @override
+  String get globalizationLocale => 'Locale';
+
+  @override
+  String get globalizationApiLanguage => 'API Language';
+
+  @override
+  String get globalizationTextDirection => 'Text Direction';
+
+  @override
+  String get globalizationLtr => 'LTR (Left to Right)';
+
+  @override
+  String get globalizationRtl => 'RTL (Right to Left)';
+
+  @override
+  String get globalizationFollowRegion => 'Follow Region';
+
+  @override
+  String get globalizationManual => 'Manual';
+
+  @override
   String get languageEnglish => 'English';
 
   @override

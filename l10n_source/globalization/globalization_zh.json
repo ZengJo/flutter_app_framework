@@ -8,5 +8,14 @@
   "globalizationMetric": "公制",
   "globalizationImperial": "英制",
   "globalization12Hour": "12 小时制",
-  "globalization24Hour": "24 小时制"
+  "globalization24Hour": "24 小时制",
+  "globalizationCurrentConfiguration": "当前全球化配置",
+  "globalizationCurrentConfigurationDescription": "以下为当前 App 实际生效的语言、地区、格式和网络全球化信息。",
+  "globalizationLocale": "Locale",
+  "globalizationApiLanguage": "API 语言",
+  "globalizationTextDirection": "文字方向",
+  "globalizationLtr": "LTR（从左到右）",
+  "globalizationRtl": "RTL（从右到左）",
+  "globalizationFollowRegion": "跟随地区",
+  "globalizationManual": "手动设置"
 }

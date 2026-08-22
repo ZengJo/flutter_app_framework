@@ -388,6 +388,60 @@ abstract class AppLocalizations {
   /// **'24-hour'**
   String get globalization24Hour;
 
+  /// No description provided for @globalizationCurrentConfiguration.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Globalization Settings'**
+  String get globalizationCurrentConfiguration;
+
+  /// No description provided for @globalizationCurrentConfigurationDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'These are the language, region, formatting, and network globalization values currently in effect across the app.'**
+  String get globalizationCurrentConfigurationDescription;
+
+  /// No description provided for @globalizationLocale.
+  ///
+  /// In en, this message translates to:
+  /// **'Locale'**
+  String get globalizationLocale;
+
+  /// No description provided for @globalizationApiLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'API Language'**
+  String get globalizationApiLanguage;
+
+  /// No description provided for @globalizationTextDirection.
+  ///
+  /// In en, this message translates to:
+  /// **'Text Direction'**
+  String get globalizationTextDirection;
+
+  /// No description provided for @globalizationLtr.
+  ///
+  /// In en, this message translates to:
+  /// **'LTR (Left to Right)'**
+  String get globalizationLtr;
+
+  /// No description provided for @globalizationRtl.
+  ///
+  /// In en, this message translates to:
+  /// **'RTL (Right to Left)'**
+  String get globalizationRtl;
+
+  /// No description provided for @globalizationFollowRegion.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow Region'**
+  String get globalizationFollowRegion;
+
+  /// No description provided for @globalizationManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual'**
+  String get globalizationManual;
+
   /// No description provided for @languageEnglish.
   ///
   /// In en, this message translates to:

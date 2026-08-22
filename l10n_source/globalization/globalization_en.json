@@ -8,5 +8,14 @@
   "globalizationMetric": "Metric",
   "globalizationImperial": "Imperial",
   "globalization12Hour": "12-hour",
-  "globalization24Hour": "24-hour"
+  "globalization24Hour": "24-hour",
+  "globalizationCurrentConfiguration": "Current Globalization Settings",
+  "globalizationCurrentConfigurationDescription": "These are the language, region, formatting, and network globalization values currently in effect across the app.",
+  "globalizationLocale": "Locale",
+  "globalizationApiLanguage": "API Language",
+  "globalizationTextDirection": "Text Direction",
+  "globalizationLtr": "LTR (Left to Right)",
+  "globalizationRtl": "RTL (Right to Left)",
+  "globalizationFollowRegion": "Follow Region",
+  "globalizationManual": "Manual"
 }

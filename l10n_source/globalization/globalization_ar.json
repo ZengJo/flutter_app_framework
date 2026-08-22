@@ -7,6 +7,15 @@
   "globalizationTimeFormat": "تنسيق الوقت",
   "globalizationMetric": "متري",
   "globalizationImperial": "إمبراطوري",
-  "globalization12Hour": "12 ساعة",
-  "globalization24Hour": "24 ساعة"
+  "globalization12Hour": "نظام 12 ساعة",
+  "globalization24Hour": "نظام 24 ساعة",
+  "globalizationCurrentConfiguration": "إعدادات العولمة الحالية",
+  "globalizationCurrentConfigurationDescription": "هذه هي قيم اللغة والمنطقة والتنسيق وإعدادات الشبكة المطبقة حاليًا في التطبيق.",
+  "globalizationLocale": "الإعدادات المحلية",
+  "globalizationApiLanguage": "لغة API",
+  "globalizationTextDirection": "اتجاه النص",
+  "globalizationLtr": "LTR (من اليسار إلى اليمين)",
+  "globalizationRtl": "RTL (من اليمين إلى اليسار)",
+  "globalizationFollowRegion": "اتباع المنطقة",
+  "globalizationManual": "إعداد يدوي"
 }
