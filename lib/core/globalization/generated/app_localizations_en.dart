@@ -215,4 +215,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get orderMessageCompleted => 'Order completed.';
+
+  @override
+  String get languagePageTitle => 'Language';
+
+  @override
+  String get languagePageDescription =>
+      'Choose the language used by the app. Changes take effect immediately.';
+
+  @override
+  String languageSystemCurrent(String language) {
+    return 'System language: $language';
+  }
+
+  @override
+  String get languageChangeImmediatelyHint =>
+      'Language changes apply immediately. You do not need to restart the app.';
 }

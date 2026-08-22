@@ -95,6 +95,56 @@
 
 ---
 
+## Core / Globalization Classes
+
+Globalization 模块属于 App 级基础设施能力，负责统一管理语言、Locale、地区、货币、时区、单位制、12/24 小时制、LTR/RTL、HTTP Header 以及本地持久化。
+
+该模块的核心原则：
+
+- `GlobalizationState` 是当前 App 真正生效的全球化状态。
+- `GlobalizationPreferences` 保存用户的选择，例如“跟随系统语言”或“手动选择 Arabic”。
+- 业务页面不要直接读写 SharedPreferences，统一通过 `GlobalizationController` 修改。
+- 业务层不要自己判断 `isArabic`，方向相关逻辑优先使用 `Directionality`、`start/end`。
+- Globalization 使用 Riverpod 管理，因为它会同时被 `MaterialApp`、Dio、Formatter、Bootstrap 和多个 Feature 使用。
+
+### Classes
+
+| Class / Enum                 | 作用                                                                                                  |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `GlobalizationConfig`        | 全球化配置入口，统一定义支持语言、默认 Locale、默认地区、默认货币等配置。                             |
+| `AppLanguage`                | App 支持语言枚举，保存语言码、API 语言码、原生语言名称等稳定信息。                                    |
+| `GlobalizationPreferences`   | 用户全球化偏好模型，保存是否跟随系统语言/地区/时区、指定货币、单位制等设置。                          |
+| `GlobalizationState`         | 当前 App 真正生效的全球化状态，包含 Locale、语言、地区、货币、时区、单位制、12/24 小时制和 RTL 状态。 |
+| `MeasurementSystem`          | 单位制枚举，区分 `system`、`metric`、`imperial`。                                                     |
+| `AppHourCycle`               | 时间制式枚举，区分 `system`、`h12`、`h24`。                                                           |
+| `GlobalizationBootstrap`     | App 启动前的全球化初始化入口，负责读取本地偏好并解析初始状态。                                        |
+| `GlobalizationBootstrapData` | 启动阶段的全球化初始化数据模型，用于向 ProviderContainer 注入初始配置。                               |
+| `GlobalizationController`    | 全球化状态控制器，统一处理语言、地区、货币、时区、单位制和时间制式切换，并负责持久化。                |
+| `GlobalizationResolver`      | 全球化总解析器，根据用户偏好与系统环境计算最终 `GlobalizationState`。                                 |
+| `LocaleResolver`             | Locale / 语言解析器，负责系统语言匹配、Fallback 和 App 支持语言映射。                                 |
+| `RegionResolver`             | 地区解析器，根据系统地区或用户配置计算当前地区。                                                      |
+| `GlobalizationStorage`       | 全球化偏好存储层，统一负责 `GlobalizationPreferences` 的本地读写。                                    |
+| `GlobalizationRuntime`       | 当前全球化运行时环境持有器，供非 Widget 场景读取实时状态。                                            |
+| `GlobalizationSystemService` | 系统全球化信息服务，负责读取系统 Locale、时区、12/24 小时制等信息。                                   |
+| `GlobalizationInterceptor`   | Dio 全球化拦截器，在每次请求时动态加入语言、地区、货币、时区等 Header。                               |
+| `AppDateFormatter`           | 日期时间格式化器，根据当前 Locale、时区和 12/24 小时制格式化时间。                                    |
+| `AppNumberFormatter`         | 数字格式化器，根据当前 Locale 格式化普通数字、百分比、紧凑数字等。                                    |
+| `AppCurrencyFormatter`       | 货币格式化器，根据当前 Locale 和货币码显示金额；只负责格式化，不负责汇率转换。                        |
+| `AppUnitFormatter`           | 单位格式化器，根据公制/英制转换并格式化温度、距离、重量等单位。                                       |
+| `LocalizationContextX`       | `BuildContext` 本地化扩展，提供 `context.l10n` 快捷访问。                                             |
+
+### Providers
+
+| Provider                       | 作用                                                                                       |
+| ------------------------------ | ------------------------------------------------------------------------------------------ |
+| `globalizationProvider`        | Globalization 的唯一主状态源，提供当前 `GlobalizationState` 和 `GlobalizationController`。 |
+| `appDateFormatterProvider`     | 根据当前 Globalization 状态提供日期时间格式化器。                                          |
+| `appNumberFormatterProvider`   | 根据当前 Globalization 状态提供数字格式化器。                                              |
+| `appCurrencyFormatterProvider` | 根据当前 Globalization 状态提供货币格式化器。                                              |
+| `appUnitFormatterProvider`     | 根据当前 Globalization 状态提供单位格式化器。                                              |
+
+---
+
 ## Core / Storage Classes
 
 | Class                | 作用                                               |
@@ -336,13 +386,18 @@ final requested =
 
 ## Shared / Image Classes
 
-| Class / Enum                | 作用                                                             |
-| --------------------------- | ---------------------------------------------------------------- |
-| `AppCachedImage`            | 网络缓存图片组件，封装图片加载、缓存、占位图、错误图。           |
-| `AdvancedImageCacheManager` | 图片缓存管理器，负责管理网络图片缓存策略。                       |
-| `AppImage`                  | 应用统一图片组件，支持资源图片、网络图片、Base64、文件图片等。   |
-| `_ImageType`                | 图片类型枚举，用于区分 asset、network、base64、file 等图片来源。 |
-| `_AppImageState`            | `AppImage` 的内部状态类，负责判断图片类型并渲染。                |
+| Class / Enum                | 作用                                                                                                   |
+| --------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `AppCachedImage`            | 网络缓存图片组件，封装图片加载、缓存、占位图、错误图。                                                 |
+| `AdvancedImageCacheManager` | 图片缓存管理器，负责管理网络图片缓存策略。                                                             |
+| `AppImage`                  | 应用统一图片组件，支持资源图片、网络图片、Base64、文件图片，并支持 `matchTextDirection` RTL 自动镜像。 |
+| `AppGlobalizedImage`        | 全球化图片组件，根据当前 Locale / Directionality 自动选择固定图、镜像图、LTR/RTL 图或语言独立图。      |
+| `AppAsset`                  | 全球化图片资源定义模型，用于声明图片采用 fixed、mirrorOnRtl、directional 或 localized 策略。           |
+| `AppAssetStrategy`          | 图片全球化策略枚举，区分固定资源、RTL 自动镜像、LTR/RTL 独立资源和 Locale 独立资源。                   |
+| `AppAssetResolver`          | 全球化图片资源解析器，根据 Locale 和文字方向解析最终图片路径及是否自动镜像。                           |
+| `ResolvedAppAsset`          | 图片解析结果模型，保存最终资源路径和 `matchTextDirection` 配置。                                       |
+| `_ImageType`                | 图片类型枚举，用于区分 asset、network、base64、file 等图片来源。                                       |
+| `_AppImageState`            | `AppImage` 的内部状态类，负责判断图片类型并渲染。                                                      |
 
 ---
 
@@ -406,6 +461,61 @@ final requested =
 
 ---
 
+## Feature / Language Settings Classes
+
+Language Settings 是 Globalization 的业务入口页面，只负责展示和触发语言选择，不建立第二套语言状态。
+
+业务规则：
+
+- 真正的语言状态只有 `globalizationProvider` 一份。
+- 页面 Provider 只整理展示数据，不负责持久化。
+- “跟随系统”与“用户手动选择当前系统同一种语言”必须能够区分。
+- 切换语言后当前页面和整个 App 立即刷新，不需要重启。
+- Arabic 等 RTL 语言切换后，页面通过 `Directionality` 自动切换为 RTL。
+- 语言名称优先显示自身原生名称，例如 `English`、`简体中文`、`العربية`，避免用户切错语言后无法识别设置项。
+
+| Class / Provider           | 作用                                                                                             |
+| -------------------------- | ------------------------------------------------------------------------------------------------ |
+| `LanguageSettingsPage`     | 语言切换页面，展示跟随系统和当前支持语言，并调用 `GlobalizationController` 完成切换。            |
+| `LanguageOptionTile`       | 单个语言选项组件，负责语言名称、原生名称、选中状态、系统选项和 RTL 自适应布局。                  |
+| `LanguageSettingsState`    | 语言设置页只读 View State，包含是否跟随系统、当前生效语言、系统语言和支持语言列表。              |
+| `languageSettingsProvider` | 语言设置页面只读 Provider，从 `globalizationProvider` 派生页面需要的数据，不保存第二份语言状态。 |
+| `AppLanguageDisplayX`      | `AppLanguage` 的页面展示扩展，负责获取当前 UI 语言下的语言名称和语言 Badge。                     |
+
+### Language Settings Workflow
+
+```text
+用户进入语言设置页
+        ↓
+languageSettingsProvider
+        ↓
+读取 globalizationProvider + 用户 Preferences
+        ↓
+展示：
+- 跟随系统
+- English
+- 简体中文
+- العربية
+        ↓
+用户点击某个语言
+        ↓
+GlobalizationController.setLanguage(...)
+        ↓
+更新 GlobalizationPreferences
+        ↓
+重新解析 GlobalizationState
+        ↓
+┌──────────────────────────────┐
+│ MaterialApp Locale 更新      │
+│ LTR / RTL 自动更新           │
+│ ARB 文案立即更新             │
+│ Dio 下一条请求 Header 更新   │
+│ 本地偏好持久化               │
+└──────────────────────────────┘
+```
+
+---
+
 # Bloc Example Workflow
 
 Bloc 适合复杂业务流程，例如订单流程。
@@ -454,7 +564,7 @@ UI 刷新为订单完成状态
 
 # Riverpod Example Workflow
 
-Riverpod 适合轻量状态，例如计数器、主题、用户信息、接口数据。
+Riverpod 在本框架中主要负责 App/Core 级基础设施状态、全局依赖以及轻量状态，例如 Globalization、Theme、Network、Repository Provider、计数器等。具体业务流程仍优先使用 Bloc。
 
 ```text
 用户点击按钮
@@ -465,6 +575,78 @@ counterProvider 状态更新
         ↓
 ConsumerWidget 自动刷新 UI
 ```
+
+---
+
+# State Management Boundary
+
+本框架同时保留 Riverpod 和 Bloc，但两者职责必须明确，避免同一个业务同时维护两份状态。
+
+## Riverpod 负责
+
+主要用于 App / Core / Infrastructure：
+
+```text
+Globalization
+Theme
+Network
+Dio
+Repository / Service Provider
+Dependency Injection
+App Config
+轻量全局状态
+```
+
+特点：
+
+- 生命周期跨多个页面或整个 App。
+- 可能同时被 UI、网络层、Bootstrap、Service 使用。
+- 更适合作为依赖注入和全局基础设施状态入口。
+
+## Bloc 负责
+
+主要用于 Feature / Business：
+
+```text
+Login
+Register
+Order
+Payment
+Device
+Recipe
+复杂列表
+页面业务流程
+```
+
+特点：
+
+- 存在明确 Event → Logic → State 流程。
+- 包含 Loading / Success / Error / Retry 等业务状态。
+- 状态生命周期通常跟某个 Feature 或页面流程绑定。
+
+## Important Rule
+
+不要为了“统一状态管理框架”把所有能力都强行改成 Bloc 或 Provider。
+
+例如语言设置：
+
+```text
+LanguageSettingsPage
+        ↓
+languageSettingsProvider（只读 View State）
+        ↓
+globalizationProvider（唯一真实状态源）
+```
+
+不需要再增加：
+
+```text
+LanguageBloc
+        ↓
+GlobalizationProvider
+```
+
+否则会形成重复状态和无意义的中间层。
 
 ---
 
@@ -566,6 +748,9 @@ HttpClient
 PreferencesService
 DeviceInfoService
 AppLogger
+GlobalizationController
+GlobalizationResolver
+AppDateFormatter
 ```
 
 ---
@@ -583,6 +768,7 @@ AppLogger
 ```text
 AppText
 AppImage
+AppGlobalizedImage
 AppTextField
 AppToast
 LoadingOverlay
@@ -606,6 +792,7 @@ LoginPage
 OrderBloc
 UserProvider
 OrderRepository
+LanguageSettingsPage
 ```
 
 ---

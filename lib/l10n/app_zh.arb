@@ -64,5 +64,16 @@
   "orderStatusFailure": "失败",
   "orderMessageCreatedPendingPayment": "订单创建成功，等待支付。",
   "orderMessagePaymentSucceeded": "支付成功。",
-  "orderMessageCompleted": "订单已完成。"
+  "orderMessageCompleted": "订单已完成。",
+  "languagePageTitle": "语言",
+  "languagePageDescription": "选择 App 使用的语言，切换后会立即生效。",
+  "languageSystemCurrent": "系统语言：{language}",
+  "@languageSystemCurrent": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "languageChangeImmediatelyHint": "语言切换会立即生效，无需重新启动 App。"
 }

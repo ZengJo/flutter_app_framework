@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../features/example/presentation/pages/example_page.dart';
+import '../../features/settings/language/presentation/pages/language_settings_page.dart';
 import 'app_navigator.dart';
 import 'route_names.dart';
 
@@ -11,6 +12,8 @@ class AppRouter {
     switch (settings.name) {
       case RouteNames.example:
         return _pageRoute(settings, const ExamplePage());
+      case RouteNames.languageSettings:
+        return _pageRoute(settings, const LanguageSettingsPage());
       default:
         return _pageRoute(settings, const ExamplePage());
     }

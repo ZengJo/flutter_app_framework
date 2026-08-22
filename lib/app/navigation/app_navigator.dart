@@ -195,8 +195,13 @@ class AppPageRoute<T> extends MaterialPageRoute<T> {
       );
     }
 
+    /// 页面切换方向跟随当前文字方向：
+    /// - LTR（中文/英文）：从右侧进入；
+    /// - RTL（阿拉伯语）：从左侧进入。
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+
     final tween = Tween<Offset>(
-      begin: const Offset(1, 0),
+      begin: Offset(isRtl ? -1 : 1, 0),
       end: Offset.zero,
     ).chain(CurveTween(curve: Curves.ease));
 

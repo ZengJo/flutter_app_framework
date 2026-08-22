@@ -86,7 +86,7 @@ class _ApplicationState extends ConsumerState<Application>
           onGenerateTitle: (context) => AppLocalizations.of(context).appName,
 
           /// 这里是路由跳转页面配置，如果不需要路由跳转，则不需要配置。
-          initialRoute: RouteNames.example,
+          initialRoute: RouteNames.languageSettings,
           onGenerateRoute: AppRouter.onGenerateRoute,
           navigatorKey: globalKeyNavigatorKey,
           navigatorObservers: [RouteObserverService()],

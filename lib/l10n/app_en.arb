@@ -85,5 +85,16 @@
   "orderStatusFailure": "Failed",
   "orderMessageCreatedPendingPayment": "Order created. Waiting for payment.",
   "orderMessagePaymentSucceeded": "Payment successful.",
-  "orderMessageCompleted": "Order completed."
+  "orderMessageCompleted": "Order completed.",
+  "languagePageTitle": "Language",
+  "languagePageDescription": "Choose the language used by the app. Changes take effect immediately.",
+  "languageSystemCurrent": "System language: {language}",
+  "@languageSystemCurrent": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "languageChangeImmediatelyHint": "Language changes apply immediately. You do not need to restart the app."
 }

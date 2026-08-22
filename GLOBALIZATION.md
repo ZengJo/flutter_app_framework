@@ -286,3 +286,398 @@ final text = switch (state.messageType) {
 ```
 
 这样用户切换语言后，当前页面可以立即重新渲染为新语言，不需要重新执行业务请求。
+
+## 20. Language Settings 语言切换业务模块
+
+语言切换页面属于 `features/settings/language`，它是 Globalization 的业务入口，但不拥有独立的语言状态。
+
+目录结构：
+
+```text
+features/
+└── settings/
+    └── language/
+        ├── model/
+        │   └── app_language_display_x.dart
+        ├── providers/
+        │   └── language_settings_provider.dart
+        └── presentation/
+            ├── pages/
+            │   └── language_settings_page.dart
+            └── widgets/
+                └── language_option_tile.dart
+```
+
+当前页面默认展示：
+
+```text
+跟随系统
+English
+简体中文
+العربية
+```
+
+### 业务职责
+
+`LanguageSettingsPage` 负责：
+
+- 展示当前支持语言。
+- 展示当前系统语言。
+- 显示用户当前选择。
+- 支持“跟随系统”。
+- 调用 `GlobalizationController.setLanguage(...)` 切换语言。
+- 切换后立即刷新当前页面和整个 App。
+- Arabic 环境下自动切换 RTL 布局。
+
+`LanguageSettingsPage` 不负责：
+
+- 直接操作 SharedPreferences。
+- 自己保存 Locale。
+- 自己创建 `LanguageBloc`。
+- 自己判断 `isArabic`。
+- 自己维护第二份 LanguageState。
+
+### 为什么“跟随系统”和“手动中文”要分开
+
+假设当前手机系统语言本来就是简体中文。
+
+下面两种情况最终 Locale 都可能是 `zh-Hans-CN`：
+
+```text
+情况 A
+用户选择：跟随系统
+系统：简体中文
+
+情况 B
+用户选择：简体中文
+系统：简体中文
+```
+
+但两者业务含义不同。
+
+以后系统语言改成 English：
+
+```text
+情况 A → App 自动变 English
+情况 B → App 仍保持简体中文
+```
+
+因此语言设置页面不能只根据最终 `GlobalizationState.language` 判断选中状态，还必须读取 `GlobalizationPreferences.followSystemLanguage`。
+
+---
+
+## 21. Language Settings 业务流程
+
+完整流程：
+
+```text
+App 启动
+        ↓
+GlobalizationBootstrap
+        ↓
+读取 GlobalizationPreferences
+        ↓
+GlobalizationResolver
+        ↓
+生成 GlobalizationState
+        ↓
+MaterialApp(locale: state.locale)
+        ↓
+用户进入 LanguageSettingsPage
+        ↓
+languageSettingsProvider
+        ↓
+读取：
+- GlobalizationState
+- GlobalizationPreferences
+- System Locale
+        ↓
+展示语言列表
+        ↓
+用户点击 العربية
+        ↓
+GlobalizationController.setLanguage(AppLanguage.arabic)
+        ↓
+保存 Preferences
+        ↓
+重新 Resolve
+        ↓
+GlobalizationState = ar-SA / RTL
+        ↓
+┌────────────────────────────────┐
+│ MaterialApp 重新构建           │
+│ ARB 文案变为 Arabic            │
+│ Directionality 变为 RTL        │
+│ 日期/数字/货币 Formatter 更新  │
+│ Dio 后续请求 Header 使用 ar-SA │
+└────────────────────────────────┘
+```
+
+整个流程不需要：
+
+```text
+重启 App
+重新进入首页
+重新创建 Dio
+```
+
+---
+
+## 22. Riverpod 与 Bloc 的职责边界
+
+Globalization 使用 Riverpod，不代表所有 Feature 都应该使用 Riverpod。
+
+本框架约定：
+
+### Riverpod
+
+用于 App / Core / Infrastructure：
+
+```text
+Globalization
+Theme
+Network
+Dio
+Repository Provider
+Service Provider
+Dependency Injection
+App Config
+轻量全局状态
+```
+
+Globalization 特别适合 Riverpod，因为同一份状态同时会被以下模块使用：
+
+```text
+MaterialApp
+Dio Interceptor
+Date Formatter
+Currency Formatter
+Unit Formatter
+Bootstrap
+Language Settings Page
+```
+
+### Bloc
+
+用于具体 Feature 的复杂业务流程：
+
+```text
+Login
+Order
+Payment
+Device
+Recipe
+复杂分页
+复杂表单流程
+```
+
+例如订单：
+
+```text
+PayOrderRequested
+        ↓
+OrderBloc
+        ↓
+Loading
+        ↓
+Repository
+        ↓
+Success / Error
+        ↓
+OrderState
+```
+
+### Language Settings 不需要 LanguageBloc
+
+当前结构：
+
+```text
+LanguageSettingsPage
+        ↓
+languageSettingsProvider
+        ↓
+globalizationProvider
+```
+
+其中：
+
+- `globalizationProvider` 是唯一真实状态源。
+- `languageSettingsProvider` 只是页面 View State / Selector。
+- 页面通过 `GlobalizationController` 修改状态。
+
+不要再增加：
+
+```text
+LanguageBloc
+        ↓
+GlobalizationController
+```
+
+否则只会多一层事件转发，并产生双状态同步风险。
+
+---
+
+## 23. Globalized Assets 图片全球化
+
+多语言项目除了文字方向，图片本身也可能存在方向差异。
+
+图片资源统一分为 4 类：
+
+| 类型               | 策略          | 典型场景                             |
+| ------------------ | ------------- | ------------------------------------ |
+| 固定图片           | `fixed`       | Logo、商品图、头像、二维码、人物照片 |
+| RTL 自动镜像       | `mirrorOnRtl` | 简单箭头、无文字手势、简单方向图     |
+| LTR / RTL 独立图片 | `directional` | 复杂流程图、带方向构图的插画         |
+| Locale 独立图片    | `localized`   | 带文字 Banner、UI 截图、市场独立素材 |
+
+### 业务层统一入口
+
+有方向或语言差异的图片优先使用：
+
+```dart
+AppGlobalizedImage(
+  asset: AppAssets.connectGuide,
+)
+```
+
+不要在业务页面写：
+
+```dart
+if (isArabic) {
+  return Image.asset('xxx_ar.webp');
+}
+```
+
+也不要把 Arabic 与 RTL 绑定。
+
+正确方向判断来源是：
+
+```dart
+Directionality.of(context)
+```
+
+因为以后：
+
+```text
+Arabic → RTL
+Hebrew → RTL
+English → LTR
+Chinese → LTR
+```
+
+### 资源命名规范
+
+固定资源：
+
+```text
+logo.webp
+product.webp
+```
+
+方向资源：
+
+```text
+connect_guide_ltr.webp
+connect_guide_rtl.webp
+```
+
+语言资源：
+
+```text
+home_banner_en.webp
+home_banner_zh.webp
+home_banner_ar.webp
+```
+
+### 图片包含文字时
+
+优先建议：
+
+```text
+背景图片
++
+Flutter Text / Button
+```
+
+而不是把文字直接烘焙进图片。
+
+这样新增语言时通常只需要新增 ARB 文案，不需要重新制作每一种语言的 Banner。
+
+如果图片本身必须包含文字，则使用 `localized` 策略为不同 Locale 准备独立资源。
+
+---
+
+## 24. RTL UI 与图片规范
+
+RTL 适配不等于“所有东西水平翻转”。
+
+### 应该跟随方向
+
+```text
+文本 start/end 对齐
+返回方向
+列表前后关系
+Padding start/end
+Positioned start/end
+流程箭头
+部分手势图
+```
+
+### 不应该翻转
+
+```text
+Logo
+商品实拍图
+人脸
+二维码
+国旗
+设备真实照片
+图片中的文字
+手机 UI 截图
+```
+
+公共 UI 优先：
+
+```dart
+TextAlign.start
+AlignmentDirectional.centerStart
+EdgeInsetsDirectional.only(start: 16, end: 8)
+PositionedDirectional(start: 16, child: child)
+```
+
+方向图片优先：
+
+```dart
+AppGlobalizedImage(
+  asset: AppAssets.xxx,
+)
+```
+
+业务代码原则上不出现：
+
+```dart
+language == AppLanguage.arabic
+```
+
+来决定 UI 左右方向。
+
+---
+
+## 25. 新增语言后的业务检查清单
+
+每新增一种语言，除了创建 ARB，还需要检查：
+
+1. `AppLanguage` 是否增加语言定义。
+2. `GlobalizationConfig.supportedLanguages` 是否加入。
+3. `app_xx.arb` Key 是否与模板语言一致。
+4. `flutter gen-l10n` 是否生成成功。
+5. Language Settings 页面是否自动出现新语言。
+6. 原生 Android/iOS App 名称是否需要对应语言。
+7. 是否属于 RTL 语言。
+8. 公共页面是否使用 `start/end` 而不是 `left/right`。
+9. 方向性图片是否使用 `AppGlobalizedImage`。
+10. 带文字图片是否准备 Locale 独立资源或改为 Flutter Text。
+11. API 是否接受对应的 `language` / `locale` Header。
+12. 日期、数字、货币和单位显示是否符合目标市场。
+
+Globalization 的目标不是“把文字翻译出来”，而是保证同一套业务逻辑在不同语言、地区和阅读方向下都能正确运行。

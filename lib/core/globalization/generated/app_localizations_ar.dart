@@ -214,4 +214,20 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get orderMessageCompleted => 'اكتمل الطلب.';
+
+  @override
+  String get languagePageTitle => 'اللغة';
+
+  @override
+  String get languagePageDescription =>
+      'اختر اللغة المستخدمة في التطبيق. سيتم تطبيق التغيير فورًا.';
+
+  @override
+  String languageSystemCurrent(String language) {
+    return 'لغة النظام: $language';
+  }
+
+  @override
+  String get languageChangeImmediatelyHint =>
+      'يتم تطبيق تغيير اللغة فورًا ولا حاجة إلى إعادة تشغيل التطبيق.';
 }
