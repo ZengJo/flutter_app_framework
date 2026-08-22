@@ -1,0 +1,19 @@
+{
+  "errorLoginExpired": "انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى.",
+  "errorParameterMismatch": "معلمات الطلب غير صالحة",
+  "errorOperationFailed": "فشلت العملية",
+  "errorJsonParseFailed": "فشل تحليل JSON",
+  "errorMethodValidationFailed": "فشل التحقق من المعلمات",
+  "errorRetryLater": "يرجى المحاولة مرة أخرى لاحقًا",
+  "errorUnknownEventType": "نوع حدث غير معروف",
+  "errorFilePathEmpty": "لا يمكن أن يكون مسار الملف فارغًا",
+  "errorFilePathInvalidCharacters": "يحتوي مسار الملف على أحرف غير صالحة",
+  "errorFileNameSuffixRequired": "يجب أن يحتوي اسم الملف على امتداد صالح",
+  "errorFileSuffixInvalid": "يجب أن يتكون امتداد الملف من 1 إلى 10 أحرف أو أرقام",
+  "errorFilePathInvalid": "تنسيق مسار الملف غير صالح",
+  "errorPlatformVersionMissing": "معلومات إصدار النظام غير متاحة",
+  "errorDataInvalid": "بيانات غير صالحة",
+  "errorLoginFailed": "فشل تسجيل الدخول",
+  "errorUserNotFound": "المستخدم غير موجود",
+  "errorIncorrectPassword": "كلمة المرور غير صحيحة"
+}

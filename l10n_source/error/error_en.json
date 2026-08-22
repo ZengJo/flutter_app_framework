@@ -1,0 +1,19 @@
+{
+  "errorLoginExpired": "Your session has expired. Please sign in again.",
+  "errorParameterMismatch": "Invalid request parameters",
+  "errorOperationFailed": "Operation failed",
+  "errorJsonParseFailed": "Failed to parse JSON",
+  "errorMethodValidationFailed": "Parameter validation failed",
+  "errorRetryLater": "Please try again later",
+  "errorUnknownEventType": "Unknown event type",
+  "errorFilePathEmpty": "File path cannot be empty",
+  "errorFilePathInvalidCharacters": "File path contains invalid characters",
+  "errorFileNameSuffixRequired": "The file name must contain a valid extension",
+  "errorFileSuffixInvalid": "The file extension must contain 1–10 letters or numbers",
+  "errorFilePathInvalid": "The file path format is invalid",
+  "errorPlatformVersionMissing": "Platform version information is unavailable",
+  "errorDataInvalid": "Invalid data",
+  "errorLoginFailed": "Sign-in failed",
+  "errorUserNotFound": "User not found",
+  "errorIncorrectPassword": "Incorrect password"
+}

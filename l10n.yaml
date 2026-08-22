@@ -21,3 +21,7 @@ nullable-getter: false
 
 # 生成后自动格式化 Dart 文件。
 format: true
+
+# 普通静态文案不强制 @metadata。
+# 带 placeholder / plural / select 的复杂文案仍建议保留 metadata。
+required-resource-attributes: false

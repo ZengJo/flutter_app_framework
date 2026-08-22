@@ -1,0 +1,14 @@
+{
+  "permissionMicrophone": "麦克风",
+  "permissionCamera": "相机",
+  "permissionPhotos": "相册",
+  "permissionNotification": "通知",
+  "permissionPhone": "电话",
+  "permissionAudio": "音频",
+  "permissionStorage": "存储",
+  "permissionWifi": "Wi-Fi",
+  "permissionBluetooth": "蓝牙",
+  "permissionLocation": "定位",
+  "permissionGeneric": "权限",
+  "permissionOpenSettings": "{permission}权限未开启，请前往设置"
+}

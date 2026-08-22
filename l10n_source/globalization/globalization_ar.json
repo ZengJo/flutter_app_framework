@@ -1,0 +1,12 @@
+{
+  "globalizationLanguage": "اللغة",
+  "globalizationRegion": "المنطقة",
+  "globalizationCurrency": "العملة",
+  "globalizationTimeZone": "المنطقة الزمنية",
+  "globalizationUnits": "الوحدات",
+  "globalizationTimeFormat": "تنسيق الوقت",
+  "globalizationMetric": "متري",
+  "globalizationImperial": "إمبراطوري",
+  "globalization12Hour": "12 ساعة",
+  "globalization24Hour": "24 ساعة"
+}

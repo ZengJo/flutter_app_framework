@@ -1,0 +1,16 @@
+{
+  "orderFlowTitle": "Order Flow",
+  "orderStatusLabel": "Status",
+  "orderCreate": "Create order",
+  "orderPay": "Pay",
+  "orderStatusInitial": "Initial",
+  "orderStatusCreating": "Creating order",
+  "orderStatusPendingPayment": "Pending payment",
+  "orderStatusPaying": "Processing payment",
+  "orderStatusPaid": "Paid",
+  "orderStatusCompleted": "Completed",
+  "orderStatusFailure": "Failed",
+  "orderMessageCreatedPendingPayment": "Order created. Waiting for payment.",
+  "orderMessagePaymentSucceeded": "Payment successful.",
+  "orderMessageCompleted": "Order completed."
+}

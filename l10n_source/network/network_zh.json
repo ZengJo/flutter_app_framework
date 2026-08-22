@@ -1,0 +1,6 @@
+{
+  "networkUnavailable": "网络不可用，操作将在恢复后同步",
+  "networkOfflinePending": "离线中，已缓存 {count} 条操作",
+  "networkRecoveredReplaying": "网络已恢复，正在同步 {count} 条操作…",
+  "networkSyncComplete": "同步完成"
+}

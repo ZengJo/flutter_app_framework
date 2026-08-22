@@ -1,0 +1,7 @@
+{
+  "appName": "Flutter 通用框架",
+  "commonFollowSystem": "跟随系统",
+  "commonSystemDefault": "系统默认",
+  "commonUnknownError": "未知错误",
+  "commonRequestTimeout": "请求超时"
+}

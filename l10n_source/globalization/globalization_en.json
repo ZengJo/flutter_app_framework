@@ -1,0 +1,12 @@
+{
+  "globalizationLanguage": "Language",
+  "globalizationRegion": "Region",
+  "globalizationCurrency": "Currency",
+  "globalizationTimeZone": "Time zone",
+  "globalizationUnits": "Units",
+  "globalizationTimeFormat": "Time format",
+  "globalizationMetric": "Metric",
+  "globalizationImperial": "Imperial",
+  "globalization12Hour": "12-hour",
+  "globalization24Hour": "24-hour"
+}

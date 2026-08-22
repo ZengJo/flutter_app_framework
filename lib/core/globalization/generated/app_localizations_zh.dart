@@ -168,6 +168,20 @@ class AppLocalizationsZh extends AppLocalizations {
   String get languageArabic => '阿拉伯语';
 
   @override
+  String get languagePageTitle => '语言';
+
+  @override
+  String get languagePageDescription => '选择 App 使用的语言，切换后会立即生效。';
+
+  @override
+  String languageSystemCurrent(String language) {
+    return '系统语言：$language';
+  }
+
+  @override
+  String get languageChangeImmediatelyHint => '语言切换会立即生效，无需重新启动 App。';
+
+  @override
   String get orderFlowTitle => '订单流程';
 
   @override
@@ -208,18 +222,4 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get orderMessageCompleted => '订单已完成。';
-
-  @override
-  String get languagePageTitle => '语言';
-
-  @override
-  String get languagePageDescription => '选择 App 使用的语言，切换后会立即生效。';
-
-  @override
-  String languageSystemCurrent(String language) {
-    return '系统语言：$language';
-  }
-
-  @override
-  String get languageChangeImmediatelyHint => '语言切换会立即生效，无需重新启动 App。';
 }

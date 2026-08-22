@@ -1,0 +1,16 @@
+{
+  "orderFlowTitle": "订单流程",
+  "orderStatusLabel": "状态",
+  "orderCreate": "创建订单",
+  "orderPay": "支付",
+  "orderStatusInitial": "初始状态",
+  "orderStatusCreating": "正在创建订单",
+  "orderStatusPendingPayment": "等待支付",
+  "orderStatusPaying": "正在支付",
+  "orderStatusPaid": "已支付",
+  "orderStatusCompleted": "已完成",
+  "orderStatusFailure": "失败",
+  "orderMessageCreatedPendingPayment": "订单创建成功，等待支付。",
+  "orderMessagePaymentSucceeded": "支付成功。",
+  "orderMessageCompleted": "订单已完成。"
+}

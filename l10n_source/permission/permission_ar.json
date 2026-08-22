@@ -1,0 +1,14 @@
+{
+  "permissionMicrophone": "الميكروفون",
+  "permissionCamera": "الكاميرا",
+  "permissionPhotos": "الصور",
+  "permissionNotification": "الإشعارات",
+  "permissionPhone": "الهاتف",
+  "permissionAudio": "الصوت",
+  "permissionStorage": "التخزين",
+  "permissionWifi": "Wi-Fi",
+  "permissionBluetooth": "البلوتوث",
+  "permissionLocation": "الموقع",
+  "permissionGeneric": "الإذن",
+  "permissionOpenSettings": "إذن {permission} معطل. يرجى تفعيله من الإعدادات."
+}

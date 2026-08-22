@@ -1,0 +1,12 @@
+{
+  "globalizationLanguage": "语言",
+  "globalizationRegion": "地区",
+  "globalizationCurrency": "货币",
+  "globalizationTimeZone": "时区",
+  "globalizationUnits": "单位",
+  "globalizationTimeFormat": "时间格式",
+  "globalizationMetric": "公制",
+  "globalizationImperial": "英制",
+  "globalization12Hour": "12 小时制",
+  "globalization24Hour": "24 小时制"
+}

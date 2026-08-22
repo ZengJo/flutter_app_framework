@@ -1,0 +1,16 @@
+{
+  "languageEnglish": "الإنجليزية",
+  "languageSimplifiedChinese": "الصينية المبسطة",
+  "languageArabic": "العربية",
+  "languagePageTitle": "اللغة",
+  "languagePageDescription": "اختر اللغة المستخدمة في التطبيق. سيتم تطبيق التغيير فورًا.",
+  "languageSystemCurrent": "لغة النظام: {language}",
+  "@languageSystemCurrent": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "languageChangeImmediatelyHint": "يتم تطبيق تغيير اللغة فورًا ولا حاجة إلى إعادة تشغيل التطبيق."
+}

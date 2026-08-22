@@ -143,6 +143,112 @@ Globalization 模块属于 App 级基础设施能力，负责统一管理语言�
 | `appCurrencyFormatterProvider` | 根据当前 Globalization 状态提供货币格式化器。                                              |
 | `appUnitFormatterProvider`     | 根据当前 Globalization 状态提供单位格式化器。                                              |
 
+### Localization Resource / Tooling
+
+翻译资源采用“模块化源文件 + 自动合并”的工程结构。`lib/l10n/app_*.arb` 是生成结果，不是日常主要维护入口。
+
+| File / Directory             | 作用                                                                                             |
+| ---------------------------- | ------------------------------------------------------------------------------------------------ |
+| `l10n_source/`               | 项目根目录下的模块化翻译源文件目录，是开发人员日常维护翻译的主要入口。                           |
+| `l10n_source/common/`        | 公共文案模块，例如 App 名称、跟随系统、通用错误等。                                              |
+| `l10n_source/network/`       | 网络断开、恢复、离线队列、同步状态等网络文案。                                                   |
+| `l10n_source/error/`         | API、登录、文件路径、数据异常等错误文案。                                                        |
+| `l10n_source/permission/`    | 相机、麦克风、相册、蓝牙、Wi-Fi、定位等权限文案。                                                |
+| `l10n_source/globalization/` | 地区、货币、时区、单位制、时间格式等全球化公共文案。                                             |
+| `l10n_source/language/`      | Language Settings 页面和语言名称等文案。                                                         |
+| `l10n_source/order/`         | Bloc 示例订单流程相关文案。                                                                      |
+| `tool/l10n_merge.dart`       | 基础合并工具，把各模块 JSON 合并为 `lib/l10n/app_*.arb`，并检查缺失模块、重复 Key 和 JSON 格式。 |
+| `tool/l10n_generate.dart`    | 开发人员一键入口，先执行 `l10n_merge.dart`，再执行 `flutter gen-l10n` 生成 `AppLocalizations`。  |
+| `lib/l10n/app_*.arb`         | Flutter `gen_l10n` 的最终输入文件，由合并脚本生成，原则上不直接手工维护。                        |
+| `l10n.yaml`                  | Flutter 本地化生成配置，定义 ARB 目录、模板文件、输出路径和 metadata 策略。                      |
+| `AppLocalizations`           | Flutter `gen_l10n` 自动生成的本地化访问类，业务层通过 `context.l10n` 使用。                      |
+
+### Localization Generation Workflow
+
+```text
+开发人员修改
+l10n_source/<module>/<module>_<locale>.json
+        ↓
+dart run tool/l10n_generate.dart
+        ↓
+tool/l10n_merge.dart
+        ↓
+lib/l10n/app_en.arb
+lib/l10n/app_zh.arb
+lib/l10n/app_ar.arb
+        ↓
+flutter gen-l10n
+        ↓
+AppLocalizations
+        ↓
+context.l10n.xxx
+```
+
+### 两个脚本的职责区别
+
+```text
+l10n_merge.dart
+= 只负责模块 JSON → app_*.arb
+= 基础工具
+= 可单独用于检查合并结果
+
+l10n_generate.dart
+= l10n_merge.dart + flutter gen-l10n
+= 正常开发时推荐使用的一键入口
+```
+
+正常开发优先执行：
+
+```bash
+dart run tool/l10n_generate.dart
+```
+
+不要直接修改：
+
+```text
+lib/l10n/app_en.arb
+lib/l10n/app_zh.arb
+lib/l10n/app_ar.arb
+```
+
+因为下一次运行合并脚本时会重新生成这些文件。
+
+### Translation Module Placement Rule
+
+新增 Feature 时，如果产生较多独立业务文案，应优先新建对应翻译模块：
+
+```text
+features/auth
+        ↓
+l10n_source/auth/
+
+features/device
+        ↓
+l10n_source/device/
+
+features/payment
+        ↓
+l10n_source/payment/
+```
+
+不要为了方便把具体业务文案全部放到 `common`。
+
+翻译 Key 继续使用：
+
+```text
+模块 + 页面/状态/含义
+```
+
+例如：
+
+```text
+authLoginButton
+deviceConnectFailed
+paymentStatusPending
+```
+
+普通静态文案不强制 metadata；带 Placeholder、Plural、Select 的复杂消息应保留 `@key` metadata。
+
 ---
 
 ## Core / Storage Classes
@@ -794,6 +900,34 @@ UserProvider
 OrderRepository
 LanguageSettingsPage
 ```
+
+---
+
+## 放到 `tool` / `l10n_source` 的内容
+
+工程生成脚本和翻译源文件不属于 App 运行时代码，不放入 `lib/core`、`lib/shared` 或 `features`。
+
+```text
+tool/
+├── l10n_merge.dart
+└── l10n_generate.dart
+
+l10n_source/
+├── common/
+├── network/
+├── error/
+├── permission/
+├── globalization/
+├── language/
+└── order/
+```
+
+其中：
+
+- `tool/`：工程辅助脚本。
+- `l10n_source/`：模块化翻译源文件。
+- `lib/l10n/`：脚本生成后的 Flutter ARB 输入目录。
+- `lib/core/globalization/generated/`：Flutter `gen_l10n` 生成的 Dart 代码目录。
 
 ---
 

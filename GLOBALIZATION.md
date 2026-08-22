@@ -12,14 +12,40 @@
 
 ## 2. 第一次运行
 
+当前项目已经采用“模块化翻译源文件 → 自动合并 ARB → Flutter gen_l10n”的生成流程。
+
+第一次运行建议执行：
+
 ```bash
 flutter pub get
-flutter gen-l10n
+dart run tool/l10n_generate.dart
 flutter analyze
 flutter run
 ```
 
-`flutter pub get` / `flutter run` 也会触发 Flutter 的本地化代码生成，但第一次接入时建议主动执行一次 `flutter gen-l10n`，方便 IDE 立即识别 `AppLocalizations`。
+其中：
+
+```text
+dart run tool/l10n_generate.dart
+        ↓
+tool/l10n_merge.dart
+        ↓
+生成 lib/l10n/app_en.arb
+生成 lib/l10n/app_zh.arb
+生成 lib/l10n/app_ar.arb
+        ↓
+flutter gen-l10n
+        ↓
+生成 AppLocalizations
+```
+
+正常开发时，不建议直接手工维护 `lib/l10n/app_*.arb`。真正需要长期维护的是项目根目录下的 `l10n_source/`。
+
+如果只想检查模块 JSON 是否能够正确合并，而暂时不重新生成 Dart 本地化代码，可以单独执行：
+
+```bash
+dart run tool/l10n_merge.dart
+```
 
 ## 3. 页面读取翻译
 
@@ -235,28 +261,557 @@ TextAlign.start
 
 ## 17. 新增一种语言
 
+当前项目已经采用模块化翻译资源，不再建议直接新建和手工维护 `lib/l10n/app_fr.arb`。
+
 以 French（法语）为例：
 
 1. 在 `lib/core/globalization/model/app_language.dart` 增加 `french`。
-2. 在 `GlobalizationConfig.supportedLanguages` 增加它。
-3. 新建 `lib/l10n/app_fr.arb`，Key 必须和 `app_en.arb` 一致。
-4. Android 如需原生 App 名称，新建 `android/app/src/main/res/values-fr/strings.xml`。
-5. iOS 如需原生 App 名称，新建 `ios/Runner/fr.lproj/InfoPlist.strings` 并在 Xcode Localizations 中加入 French。
-6. 运行 `flutter gen-l10n`。
+2. 在 `GlobalizationConfig.supportedLanguages` 增加 `AppLanguage.french`。
+3. 在 `tool/l10n_merge.dart` 的 `locales` 中增加 `fr`。
+4. 为每个现有翻译模块增加对应的 French 源文件，例如：
 
-## 18. ARB Key 规范
+```text
+l10n_source/
+├── common/common_fr.json
+├── network/network_fr.json
+├── error/error_fr.json
+├── permission/permission_fr.json
+├── globalization/globalization_fr.json
+├── language/language_fr.json
+└── order/order_fr.json
+```
 
-统一使用“模块 + 页面/含义”的英文 Key，不使用中文作为 Key：
+5. Android 如需原生 App 名称，新建：
+
+```text
+android/app/src/main/res/values-fr/strings.xml
+```
+
+6. iOS 如需原生 App 名称，新建：
+
+```text
+ios/Runner/fr.lproj/InfoPlist.strings
+```
+
+并在 Xcode Localizations 中加入 French。
+
+7. 执行：
+
+```bash
+dart run tool/l10n_generate.dart
+```
+
+脚本会自动生成：
+
+```text
+lib/l10n/app_fr.arb
+        ↓
+flutter gen-l10n
+        ↓
+AppLocalizations
+```
+
+新增语言后，不要只检查文字翻译，还需要继续检查 RTL、日期、数字、货币、单位、图片方向和 API Locale。
+
+---
+
+## 18. 翻译资源目录、ARB 生成与 Key 规范
+
+### 18.1 为什么不再把所有翻译写进一个 ARB
+
+当项目同时包含：
+
+```text
+Common
+Network
+Error
+Permission
+Globalization
+Language
+Order
+Login
+Device
+Payment
+...
+```
+
+如果全部直接写进：
+
+```text
+lib/l10n/app_zh.arb
+lib/l10n/app_en.arb
+lib/l10n/app_ar.arb
+```
+
+文件会快速增长到几百甚至几千行，查找和维护都比较困难。
+
+因此本框架把“开发维护文件”和“Flutter 最终输入文件”分开：
+
+```text
+开发维护
+l10n_source/
+        ↓
+自动合并
+lib/l10n/app_*.arb
+        ↓
+Flutter gen_l10n
+AppLocalizations
+```
+
+### 18.2 `l10n_source` 放在哪里
+
+`l10n_source` 放在项目根目录，和 `lib`、`tool`、`pubspec.yaml` 同级。
+
+推荐项目结构：
+
+```text
+flutter_app_framework/
+├── android/
+├── ios/
+├── lib/
+│   └── l10n/
+│       ├── app_en.arb
+│       ├── app_zh.arb
+│       └── app_ar.arb
+│
+├── l10n_source/
+│   ├── common/
+│   ├── network/
+│   ├── error/
+│   ├── permission/
+│   ├── globalization/
+│   ├── language/
+│   └── order/
+│
+├── tool/
+│   ├── l10n_merge.dart
+│   └── l10n_generate.dart
+│
+├── l10n.yaml
+└── pubspec.yaml
+```
+
+原因：
+
+```text
+l10n_source/
+= 开发人员维护的翻译源文件
+= 工程工具输入
+= App 运行时不直接读取
+
+lib/l10n/
+= 自动合并后的最终 ARB
+= flutter gen-l10n 的输入
+```
+
+`l10n_source` 不属于 App 运行时代码，因此不需要放入 `lib/`。
+
+---
+
+### 18.3 当前模块划分
+
+当前翻译按照以下 7 个模块维护：
+
+```text
+l10n_source/
+├── common/
+│   ├── common_en.json
+│   ├── common_zh.json
+│   └── common_ar.json
+│
+├── network/
+│   ├── network_en.json
+│   ├── network_zh.json
+│   └── network_ar.json
+│
+├── error/
+│   ├── error_en.json
+│   ├── error_zh.json
+│   └── error_ar.json
+│
+├── permission/
+│   ├── permission_en.json
+│   ├── permission_zh.json
+│   └── permission_ar.json
+│
+├── globalization/
+│   ├── globalization_en.json
+│   ├── globalization_zh.json
+│   └── globalization_ar.json
+│
+├── language/
+│   ├── language_en.json
+│   ├── language_zh.json
+│   └── language_ar.json
+│
+└── order/
+    ├── order_en.json
+    ├── order_zh.json
+    └── order_ar.json
+```
+
+模块职责：
+
+| 模块            | 主要内容                                                 |
+| --------------- | -------------------------------------------------------- |
+| `common`        | App 名称、确认、取消、跟随系统、通用错误等公共文案       |
+| `network`       | 网络断开、网络恢复、离线队列、同步状态等                 |
+| `error`         | API、登录、文件路径、数据异常等错误文案                  |
+| `permission`    | 相机、麦克风、相册、蓝牙、Wi-Fi、定位等权限文案          |
+| `globalization` | 语言、地区、货币、时区、单位制、时间格式等通用全球化文案 |
+| `language`      | Language Settings 页面、语言名称、系统语言提示等         |
+| `order`         | Bloc 示例订单流程、订单状态、支付提示等                  |
+
+以后新增业务时，优先新建自己的模块：
+
+```text
+l10n_source/auth/
+l10n_source/device/
+l10n_source/payment/
+l10n_source/recipe/
+```
+
+不要把新的业务文案继续塞入 `common`。
+
+---
+
+### 18.4 `l10n_merge.dart` 是什么
+
+文件：
+
+```text
+tool/l10n_merge.dart
+```
+
+职责只有一个：
+
+> 把 `l10n_source` 中拆开的模块 JSON 合并为 Flutter `gen_l10n` 能识别的 `app_xx.arb`。
+
+例如中文：
+
+```text
+common_zh.json
+network_zh.json
+error_zh.json
+permission_zh.json
+globalization_zh.json
+language_zh.json
+order_zh.json
+        ↓
+l10n_merge.dart
+        ↓
+lib/l10n/app_zh.arb
+```
+
+它同时负责：
+
+- 按固定模块顺序合并。
+- 自动写入 `@@locale`。
+- 检查 JSON 是否有效。
+- 检查模块文件是否缺失。
+- 检查重复翻译 Key。
+- 防止不同模块静默覆盖同一个 Key。
+
+单独使用：
+
+```bash
+dart run tool/l10n_merge.dart
+```
+
+这个命令只生成 ARB，不执行 `flutter gen-l10n`。
+
+---
+
+### 18.5 `l10n_generate.dart` 是什么
+
+文件：
+
+```text
+tool/l10n_generate.dart
+```
+
+它是开发人员平时使用的“一键生成入口”。
+
+内部执行：
+
+```text
+dart run tool/l10n_merge.dart
+        ↓
+lib/l10n/app_*.arb
+        ↓
+flutter gen-l10n
+        ↓
+AppLocalizations
+```
+
+正常开发建议只记住：
+
+```bash
+dart run tool/l10n_generate.dart
+```
+
+两者关系：
+
+```text
+l10n_merge.dart
+= 基础合并工具
+
+l10n_generate.dart
+= 开发人员入口
+= merge + flutter gen-l10n
+```
+
+---
+
+### 18.6 正常开发流程
+
+例如 Order 模块新增“取消订单”：
+
+中文：
+
+```text
+l10n_source/order/order_zh.json
+```
+
+```json
+{
+  "orderCancel": "取消订单"
+}
+```
+
+英文：
+
+```text
+l10n_source/order/order_en.json
+```
+
+```json
+{
+  "orderCancel": "Cancel Order"
+}
+```
+
+Arabic：
+
+```text
+l10n_source/order/order_ar.json
+```
+
+```json
+{
+  "orderCancel": "إلغاء الطلب"
+}
+```
+
+然后执行：
+
+```bash
+dart run tool/l10n_generate.dart
+```
+
+业务页面继续使用：
+
+```dart
+Text(context.l10n.orderCancel)
+```
+
+业务代码不需要知道这些 Key 最终来自哪个 JSON 模块。
+
+---
+
+### 18.7 Key 命名规范
+
+统一使用：
+
+```text
+模块 + 页面/状态/含义
+```
+
+不使用中文作为 Key。
+
+推荐：
 
 ```text
 commonUnknownError
-authLoginButton
-orderStatusPaid
+networkOfflinePending
 permissionCamera
 globalizationTimeZone
+languagePageTitle
+orderStatusPaid
+authLoginButton
+deviceConnectFailed
 ```
 
-ARB 是 JSON 格式，本身不支持 `//` 注释；需要说明时使用 `@key` metadata。
+不推荐：
+
+```text
+title
+button
+text1
+message
+unknown
+登录按钮
+```
+
+Key 必须具有足够的业务语义，避免不同模块产生重复名称。
+
+---
+
+### 18.8 metadata 规则
+
+`l10n.yaml` 当前使用：
+
+```yaml
+required-resource-attributes: false
+```
+
+因此普通静态文案不要求机械添加 `@key` metadata。
+
+例如：
+
+```json
+{
+  "commonFollowSystem": "跟随系统"
+}
+```
+
+这是正常的，不需要再增加：
+
+```json
+"@commonFollowSystem": {
+  "description": "..."
+}
+```
+
+但是包含 Placeholder、Plural、Select 的复杂消息应保留 metadata。
+
+例如：
+
+```json
+{
+  "networkOfflinePending": "离线中，已缓存 {count} 条操作",
+
+  "@networkOfflinePending": {
+    "description": "网络离线时显示当前缓存的待同步操作数量",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
+}
+```
+
+这样可以避免：
+
+```text
+The message with key "commonFollowSystem" does not have metadata defined.
+```
+
+以及：
+
+```text
+Resource attribute "@appName" was not found.
+```
+
+这类由强制 metadata 模式引起的报错。
+
+---
+
+### 18.9 `lib/l10n/app_*.arb` 是否可以手工修改
+
+原则上：
+
+> 不建议。
+
+因为下一次执行：
+
+```bash
+dart run tool/l10n_generate.dart
+```
+
+`l10n_merge.dart` 会重新生成：
+
+```text
+lib/l10n/app_en.arb
+lib/l10n/app_zh.arb
+lib/l10n/app_ar.arb
+```
+
+手工修改可能被覆盖。
+
+正确做法：
+
+```text
+发现某条中文需要修改
+        ↓
+修改 l10n_source/对应模块/xxx_zh.json
+        ↓
+修改其他语言对应文件
+        ↓
+dart run tool/l10n_generate.dart
+```
+
+---
+
+### 18.10 `generated_preview` 是否需要保留
+
+不需要。
+
+`generated_preview` 只是首次把原来的三个大 ARB 拆成模块时，用来验证：
+
+```text
+拆分前 ARB
+==
+模块 JSON 重新合并后的 ARB
+```
+
+它不是正式运行目录，也不是生成链路的一部分。
+
+正式项目可以删除：
+
+```text
+generated_preview/
+```
+
+正式保留：
+
+```text
+l10n_source/
+tool/l10n_merge.dart
+tool/l10n_generate.dart
+lib/l10n/
+l10n.yaml
+```
+
+---
+
+### 18.11 推荐的最终生成链路
+
+```text
+开发人员
+        ↓
+修改 l10n_source/<module>/*.json
+        ↓
+dart run tool/l10n_generate.dart
+        ↓
+┌─────────────────────────────┐
+│ l10n_merge.dart             │
+│                             │
+│ 模块 JSON → app_*.arb       │
+└─────────────────────────────┘
+        ↓
+lib/l10n/app_*.arb
+        ↓
+flutter gen-l10n
+        ↓
+lib/core/globalization/generated/
+AppLocalizations
+        ↓
+context.l10n.xxx
+```
+
+`lib/l10n/app_*.arb` 是中间生成文件，`AppLocalizations` 是最终 Dart 生成代码，而 `l10n_source` 才是开发人员日常维护的翻译源。
 
 ## 19. 业务层不要保存已经翻译好的字符串
 
@@ -665,19 +1220,24 @@ language == AppLanguage.arabic
 
 ## 25. 新增语言后的业务检查清单
 
-每新增一种语言，除了创建 ARB，还需要检查：
+每新增一种语言，需要检查：
 
 1. `AppLanguage` 是否增加语言定义。
 2. `GlobalizationConfig.supportedLanguages` 是否加入。
-3. `app_xx.arb` Key 是否与模板语言一致。
-4. `flutter gen-l10n` 是否生成成功。
-5. Language Settings 页面是否自动出现新语言。
-6. 原生 Android/iOS App 名称是否需要对应语言。
-7. 是否属于 RTL 语言。
-8. 公共页面是否使用 `start/end` 而不是 `left/right`。
-9. 方向性图片是否使用 `AppGlobalizedImage`。
-10. 带文字图片是否准备 Locale 独立资源或改为 Flutter Text。
-11. API 是否接受对应的 `language` / `locale` Header。
-12. 日期、数字、货币和单位显示是否符合目标市场。
+3. `tool/l10n_merge.dart` 的 `locales` 是否加入新语言代码。
+4. `l10n_source` 下每个现有模块是否都创建对应语言 JSON。
+5. 各语言模块 Key 是否与基准语言保持一致。
+6. `dart run tool/l10n_generate.dart` 是否执行成功。
+7. 自动生成的 `lib/l10n/app_xx.arb` 是否存在。
+8. `AppLocalizations` 是否重新生成成功。
+9. Language Settings 页面是否自动出现新语言。
+10. 原生 Android/iOS App 名称是否需要对应语言。
+11. 是否属于 RTL 语言。
+12. 公共页面是否使用 `start/end` 而不是 `left/right`。
+13. 方向性图片是否使用 `AppGlobalizedImage`。
+14. 带文字图片是否准备 Locale 独立资源或改为 Flutter Text。
+15. API 是否接受对应的 `language` / `locale` Header。
+16. 日期、数字、货币和单位显示是否符合目标市场。
+17. 不要直接手工修改生成后的 `lib/l10n/app_xx.arb`。
 
 Globalization 的目标不是“把文字翻译出来”，而是保证同一套业务逻辑在不同语言、地区和阅读方向下都能正确运行。

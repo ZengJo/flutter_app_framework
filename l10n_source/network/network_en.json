@@ -1,0 +1,20 @@
+{
+  "networkUnavailable": "Network unavailable. Actions will sync when the connection returns.",
+  "networkOfflinePending": "Offline. {count} queued actions.",
+  "@networkOfflinePending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "networkRecoveredReplaying": "Connection restored. Syncing {count} queued actions…",
+  "@networkRecoveredReplaying": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "networkSyncComplete": "Sync complete"
+}

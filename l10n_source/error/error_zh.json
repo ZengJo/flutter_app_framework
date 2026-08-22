@@ -1,0 +1,19 @@
+{
+  "errorLoginExpired": "登录已过期，请重新登录",
+  "errorParameterMismatch": "传参不匹配",
+  "errorOperationFailed": "操作失败",
+  "errorJsonParseFailed": "JSON 解析失败",
+  "errorMethodValidationFailed": "方法级参数校验失败",
+  "errorRetryLater": "请稍候重试",
+  "errorUnknownEventType": "未知事件类型",
+  "errorFilePathEmpty": "文件路径不能为空",
+  "errorFilePathInvalidCharacters": "文件路径含非法字符",
+  "errorFileNameSuffixRequired": "文件名必须包含有效后缀",
+  "errorFileSuffixInvalid": "文件后缀必须为 1-10 位字母或数字",
+  "errorFilePathInvalid": "文件路径必须符合规范",
+  "errorPlatformVersionMissing": "无平台版本信息",
+  "errorDataInvalid": "数据异常",
+  "errorLoginFailed": "登录失败",
+  "errorUserNotFound": "用户不存在",
+  "errorIncorrectPassword": "密码错误"
+}

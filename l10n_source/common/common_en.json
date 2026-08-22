@@ -1,0 +1,7 @@
+{
+  "appName": "Flutter App Framework",
+  "commonFollowSystem": "Follow system",
+  "commonSystemDefault": "System default",
+  "commonUnknownError": "Unknown error",
+  "commonRequestTimeout": "Request timed out"
+}

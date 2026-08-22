@@ -406,6 +406,30 @@ abstract class AppLocalizations {
   /// **'Arabic'**
   String get languageArabic;
 
+  /// No description provided for @languagePageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languagePageTitle;
+
+  /// No description provided for @languagePageDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the language used by the app. Changes take effect immediately.'**
+  String get languagePageDescription;
+
+  /// No description provided for @languageSystemCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'System language: {language}'**
+  String languageSystemCurrent(String language);
+
+  /// No description provided for @languageChangeImmediatelyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Language changes apply immediately. You do not need to restart the app.'**
+  String get languageChangeImmediatelyHint;
+
   /// No description provided for @orderFlowTitle.
   ///
   /// In en, this message translates to:
@@ -489,30 +513,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Order completed.'**
   String get orderMessageCompleted;
-
-  /// No description provided for @languagePageTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Language'**
-  String get languagePageTitle;
-
-  /// No description provided for @languagePageDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose the language used by the app. Changes take effect immediately.'**
-  String get languagePageDescription;
-
-  /// No description provided for @languageSystemCurrent.
-  ///
-  /// In en, this message translates to:
-  /// **'System language: {language}'**
-  String languageSystemCurrent(String language);
-
-  /// No description provided for @languageChangeImmediatelyHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Language changes apply immediately. You do not need to restart the app.'**
-  String get languageChangeImmediatelyHint;
 }
 
 class _AppLocalizationsDelegate

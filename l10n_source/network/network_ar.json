@@ -1,0 +1,6 @@
+{
+  "networkUnavailable": "الشبكة غير متاحة. ستتم مزامنة العمليات عند عودة الاتصال.",
+  "networkOfflinePending": "أنت غير متصل. هناك {count} عمليات في قائمة الانتظار.",
+  "networkRecoveredReplaying": "عاد الاتصال. جارٍ مزامنة {count} عمليات…",
+  "networkSyncComplete": "اكتملت المزامنة"
+}

@@ -1,0 +1,16 @@
+{
+  "orderFlowTitle": "مسار الطلب",
+  "orderStatusLabel": "الحالة",
+  "orderCreate": "إنشاء الطلب",
+  "orderPay": "الدفع",
+  "orderStatusInitial": "الحالة الأولية",
+  "orderStatusCreating": "جارٍ إنشاء الطلب",
+  "orderStatusPendingPayment": "بانتظار الدفع",
+  "orderStatusPaying": "جارٍ معالجة الدفع",
+  "orderStatusPaid": "تم الدفع",
+  "orderStatusCompleted": "مكتمل",
+  "orderStatusFailure": "فشل",
+  "orderMessageCreatedPendingPayment": "تم إنشاء الطلب وهو بانتظار الدفع.",
+  "orderMessagePaymentSucceeded": "تم الدفع بنجاح.",
+  "orderMessageCompleted": "اكتمل الطلب."
+}
