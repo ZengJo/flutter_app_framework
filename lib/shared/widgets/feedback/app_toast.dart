@@ -4,36 +4,43 @@ import 'package:flutter/material.dart';
 
 import '../../../app/config/app_globals.dart';
 import '../../../core/device/device_info_service.dart';
+import '../../../core/globalization/generated/app_localizations.dart';
 import '../text/app_text.dart';
 
 class AppToast {
-  ///toast overlay entry
   static OverlayEntry? _entry;
-
-  ///toast timer
   static Timer? _timer;
 
-  /// 从异常/错误对象取出适合展示给用户的文案（去掉 Dart 默认的 `Exception: ` 前缀等）。
-  static String messageOf(Object? error) {
-    if (error == null) return '未知错误';
+  /// 从异常对象中提取适合展示给用户的文案。
+  ///
+  /// 框架自身可识别的错误使用 ARB；业务异常仍保留异常自身 message。
+  static String messageOf(Object? error, {BuildContext? context}) {
+    final l10n = _maybeL10n(context ?? maybeGlobalContext);
+
+    if (error == null) {
+      return l10n?.commonUnknownError ?? 'Unknown error';
+    }
 
     if (error is FormatException) {
       return error.message;
     }
+
     if (error is TimeoutException) {
-      return error.message ?? '请求超时';
+      final message = error.message;
+      if (message != null && message.trim().isNotEmpty) return message;
+      return l10n?.commonRequestTimeout ?? 'Request timed out';
     }
 
-    // 去掉一层或多层 `Exception: `（例如 catch 里又包了一层 Exception）
-    var s = error.toString().trim();
+    // 去掉一层或多层 Dart 默认的 `Exception: ` 前缀。
+    var value = error.toString().trim();
     const prefix = 'Exception: ';
-    while (s.startsWith(prefix)) {
-      s = s.substring(prefix.length).trimLeft();
+    while (value.startsWith(prefix)) {
+      value = value.substring(prefix.length).trimLeft();
     }
-    return s.isEmpty ? '未知错误' : s;
+
+    return value.isEmpty ? l10n?.commonUnknownError ?? 'Unknown error' : value;
   }
 
-  /// 使用 [messageOf] 解析后弹出 Toast
   static void showError(
     Object error, {
     Duration duration = const Duration(seconds: 2),
@@ -41,7 +48,6 @@ class AppToast {
     show(messageOf(error), duration: duration);
   }
 
-  ///显示toast
   static void show(
     String message, {
     Duration duration = const Duration(seconds: 2),
@@ -52,12 +58,15 @@ class AppToast {
     if (context == null) return;
 
     final overlay = Overlay.of(context, rootOverlay: true);
-
     _entry = OverlayEntry(builder: (_) => _ToastWidget(message: message));
-
     overlay.insert(_entry!);
 
     _timer = Timer(duration, _dismiss);
+  }
+
+  static AppLocalizations? _maybeL10n(BuildContext? context) {
+    if (context == null) return null;
+    return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
   static void _dismiss() {
@@ -67,7 +76,7 @@ class AppToast {
     try {
       _entry?.remove();
     } catch (_) {
-      // 忽略重复 remove（兜底）
+      // 忽略重复 remove。
     }
 
     _entry = null;
@@ -75,17 +84,13 @@ class AppToast {
 }
 
 class _ToastWidget extends StatelessWidget {
-  final String message;
-
   const _ToastWidget({required this.message});
+
+  final String message;
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
+    return PositionedDirectional(
       child: IgnorePointer(
         child: Center(
           child: Material(

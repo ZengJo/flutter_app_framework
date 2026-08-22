@@ -105,7 +105,7 @@ abstract class BaseRiverpodState<
   Widget buildContainer(BuildContext context, Widget child) {
     return AppScaffold(
       body: Container(
-        alignment: Alignment.topLeft,
+        alignment: AlignmentDirectional.topStart,
         height: double.infinity,
         width: double.infinity,
         child: child,

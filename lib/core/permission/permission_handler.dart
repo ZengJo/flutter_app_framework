@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../shared/widgets/feedback/app_toast.dart';
+import '../globalization/extensions/localization_context_x.dart';
 import 'permission_request.dart';
 import 'permission_resolver.dart';
 
@@ -88,7 +89,11 @@ class PermissionHandler {
     required Permission permission,
     required BuildContext context,
   }) async {
-    final label = await PermissionResolver.instance.resolveLabel(permission);
+    final l10n = context.l10n;
+    final label = await PermissionResolver.instance.resolveLabel(
+      permission,
+      l10n,
+    );
 
     if (await permission.isGranted) {
       return true;
@@ -101,7 +106,7 @@ class PermissionHandler {
     }
 
     if (status.isPermanentlyDenied || status.isRestricted || status.isLimited) {
-      AppToast.show("$label权限未开启，请前往设置");
+      AppToast.show(l10n.permissionOpenSettings(label));
 
       await Future.delayed(const Duration(milliseconds: 1200));
 

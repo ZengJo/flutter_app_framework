@@ -89,7 +89,7 @@ class AppForm extends StatelessWidget {
                               color: labelStyle?.color,
                             ),
                             if (item.labelExtendWidget != null)
-                              item.labelExtendWidget ?? SizedBox.shrink(),
+                              item.labelExtendWidget ?? const SizedBox.shrink(),
                           ],
                         ),
                       ),
@@ -98,20 +98,21 @@ class AppForm extends StatelessWidget {
                       if (item.desc != null)
                         Flexible(
                           child: Container(
-                            alignment: Alignment.centerRight,
-                            padding: EdgeInsets.only(left: 16.r),
-                            margin: EdgeInsets.only(right: 4.r),
+                            alignment: AlignmentDirectional.centerEnd,
+                            padding: EdgeInsetsDirectional.only(start: 16.r),
+                            margin: EdgeInsetsDirectional.only(end: 4.r),
                             child: AppText(
                               item.desc,
                               fontSize: descStyle?.fontSize,
                               fontWeight: descStyle?.fontWeight,
                               maxLines: 1,
-                              color: descStyle?.color ?? Color(0xFF999999),
+                              color:
+                                  descStyle?.color ?? const Color(0xFF999999),
                             ),
                           ),
                         ),
                       // 右侧 widget
-                      item.latterWidget ?? SizedBox.shrink(),
+                      item.latterWidget ?? const SizedBox.shrink(),
                     ],
                   ),
                 ),
@@ -123,8 +124,8 @@ class AppForm extends StatelessWidget {
                           width: double.maxFinite,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
+                              begin: AlignmentDirectional.centerStart,
+                              end: AlignmentDirectional.centerEnd,
                               colors: [
                                 const Color(0xFFF0F0F0).withValues(
                                   alpha: 0.00,
@@ -136,7 +137,7 @@ class AppForm extends StatelessWidget {
                                   alpha: 0.00,
                                 ), // rgba(240, 240, 240, 0.00)
                               ],
-                              stops: [0.0, 0.5, 1.0],
+                              stops: const [0.0, 0.5, 1.0],
                             ),
                           ),
                         )

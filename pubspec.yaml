@@ -30,6 +30,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  # Flutter 官方国际化支持（Material / Cupertino / Widgets 本地化）
+  flutter_localizations:
+    sdk: flutter
+  # 日期、数字、货币等国际化格式化
+  intl: any
+  # 获取设备当前 IANA 时区，例如 America/Los_Angeles
+  flutter_timezone: ^5.1.0
+  # IANA 时区数据库与 TZDateTime
+  timezone: ^0.11.1
+  # ISO 国家/地区信息，用于地区 -> 默认货币/单位制解析
+  country: ^7.0.0
   #屏幕适配
   flutter_screenutil: ^5.9.3
   #图片缓存
@@ -100,6 +111,9 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  # 生成 ARB 对应的 AppLocalizations 源码。
+  generate: true
+
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

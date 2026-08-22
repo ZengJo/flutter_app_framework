@@ -1,51 +1,79 @@
+import 'package:flutter/widgets.dart';
+
+import '../../../app/config/app_globals.dart';
 import '../../../shared/widgets/feedback/app_toast.dart';
+import '../../globalization/generated/app_localizations.dart';
 
-/// 处理后端非 200 业务状态码
+/// 处理后端非 200 业务状态码。
+///
+/// 后端只负责返回稳定 code；框架根据当前 Locale 决定展示语言。
 class ResponseErrorHandler {
-  /// 统一维护错误提示词
-  static
-  /// HTTP 响应错误码 → 提示文案
-  const Map<int, String> httpErrorCodeMap = {
-    10001: "传参不匹配",
-    10002: "操作失败",
-    10003: "JSON解析失败",
-    10004: "方法级参数校验失败",
-    10005: "请稍候重试",
-    10006: "未知事件类型",
+  const ResponseErrorHandler._();
 
-    10016: "文件路径不能为空",
-    10017: "文件路径含非法字符",
-    10018: "文件名必须包含有效后缀",
-    10019: "文件后缀必须为1-10位字母或数字",
-    10020: "文件路径必须符合规范",
-
-    13001: "无平台版本信息",
-    14001: "数据异常",
-
-    20001: "登录失败",
-    20002: "用户不存在",
-    20003: "密码错误",
-  };
-
-  /// 处理逻辑：返回 true 表示已处理（调用方不用再继续 toast/fallback）
-  /// [code] 后端返回的业务状态码
-  /// [serverMsg] 后端返回的业务状态码对应的提示信息
-  /// [isShowToast] 是否显示 toast
+  /// 返回 true 表示当前 code 已由客户端处理。
   static Future<bool> handle({
     int? code,
     required String serverMsg,
     bool isShowToast = true,
   }) async {
-    if (code == null) {
-      return false;
+    if (code == null) return false;
+
+    final l10n = _currentL10n();
+    final mapped = _messageForCode(code, l10n);
+    if (mapped == null || mapped.isEmpty) return false;
+
+    if (isShowToast) AppToast.show(mapped);
+    return true;
+  }
+
+  static AppLocalizations? _currentL10n() {
+    final context = maybeGlobalContext;
+    if (context == null) return null;
+    return Localizations.of<AppLocalizations>(context, AppLocalizations);
+  }
+
+  static String? _messageForCode(int code, AppLocalizations? l10n) {
+    if (l10n != null) {
+      return switch (code) {
+        10001 => l10n.errorParameterMismatch,
+        10002 => l10n.errorOperationFailed,
+        10003 => l10n.errorJsonParseFailed,
+        10004 => l10n.errorMethodValidationFailed,
+        10005 => l10n.errorRetryLater,
+        10006 => l10n.errorUnknownEventType,
+        10016 => l10n.errorFilePathEmpty,
+        10017 => l10n.errorFilePathInvalidCharacters,
+        10018 => l10n.errorFileNameSuffixRequired,
+        10019 => l10n.errorFileSuffixInvalid,
+        10020 => l10n.errorFilePathInvalid,
+        13001 => l10n.errorPlatformVersionMissing,
+        14001 => l10n.errorDataInvalid,
+        20001 => l10n.errorLoginFailed,
+        20002 => l10n.errorUserNotFound,
+        20003 => l10n.errorIncorrectPassword,
+        _ => null,
+      };
     }
-    final mapped = httpErrorCodeMap[code];
-    if (mapped != null && mapped.isNotEmpty) {
-      if (isShowToast) AppToast.show(mapped);
-      return true;
-    } else {
-      // 处理未知错误状态码
-      return false;
-    }
+
+    // 极少数 Localizations 尚未挂载的场景使用英文兜底。
+    return switch (code) {
+      10001 => 'Invalid request parameters',
+      10002 => 'Operation failed',
+      10003 => 'Failed to parse JSON',
+      10004 => 'Parameter validation failed',
+      10005 => 'Please try again later',
+      10006 => 'Unknown event type',
+      10016 => 'File path cannot be empty',
+      10017 => 'File path contains invalid characters',
+      10018 => 'The file name must contain a valid extension',
+      10019 => 'The file extension must contain 1–10 letters or numbers',
+      10020 => 'The file path format is invalid',
+      13001 => 'Platform version information is unavailable',
+      14001 => 'Invalid data',
+      20001 => 'Sign-in failed',
+      20002 => 'User not found',
+      20003 => 'Incorrect password',
+      _ => null,
+    };
   }
 }

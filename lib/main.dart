@@ -6,23 +6,66 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'app/bootstrap/application_bootstrapper.dart';
 import 'app/config/app_globals.dart';
-import 'app/config/application_config.dart';
 import 'app/navigation/app_navigator.dart';
 import 'app/navigation/app_router.dart';
 import 'app/navigation/route_names.dart';
 import 'app/theme/app_theme.dart';
+import 'core/globalization/generated/app_localizations.dart';
+import 'core/globalization/providers/globalization_providers.dart';
 
 Future<void> main() async {
   await ApplicationBootstrapper.instance.bootstrap();
 }
 
-class Application extends ConsumerWidget {
+/// App 根节点。
+///
+/// 使用 ConsumerStatefulWidget 的原因：
+/// 1. 监听 Riverpod 的 GlobalizationState；
+/// 2. 监听系统 Locale 变化；
+/// 3. App 回到前台时刷新系统时区。
+class Application extends ConsumerStatefulWidget {
   const Application({super.key, required this.startPage});
 
   final Widget startPage;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<Application> createState() => _ApplicationState();
+}
+
+class _ApplicationState extends ConsumerState<Application>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeLocales(List<Locale>? locales) {
+    super.didChangeLocales(locales);
+    ref.read(globalizationProvider.notifier).updateSystemLocales(locales);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.resumed) {
+      // 用户可能在系统设置中修改了时区，回到 App 时刷新。
+      ref.read(globalizationProvider.notifier).refreshSystemSettings();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final globalization = ref.watch(globalizationProvider);
+
     return ScreenUtilInit(
       designSize: MediaQuery.sizeOf(context).shortestSide > 600
           ? const Size(1112, 710)
@@ -32,12 +75,19 @@ class Application extends ConsumerWidget {
       rebuildFactor: RebuildFactors.size,
       builder: (context, child) {
         return MaterialApp(
-          ///这里是路由跳转页面配置，如果不需要路由跳转，则不需要配置
-          initialRoute: RouteNames.example,
+          /// 当前真正生效的 Locale。
+          locale: globalization.locale,
 
-          ///这里是路由跳转页面配置，如果不需要路由跳转，则不需要配置
+          /// Flutter 官方生成的 Material / Cupertino / Widgets 本地化代理。
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+
+          /// App 名称也从 ARB 获取，不再写死单一语言。
+          onGenerateTitle: (context) => AppLocalizations.of(context).appName,
+
+          /// 这里是路由跳转页面配置，如果不需要路由跳转，则不需要配置。
+          initialRoute: RouteNames.example,
           onGenerateRoute: AppRouter.onGenerateRoute,
-          title: ApplicationConfig.appName,
           navigatorKey: globalKeyNavigatorKey,
           navigatorObservers: [RouteObserverService()],
           theme: AppTheme.light(),
@@ -54,10 +104,10 @@ class Application extends ConsumerWidget {
             },
           ),
 
-          ///这里是首页配置，如果不需要首页，则不需要配置，比如登录页，引导页等，路由跳转方式需要注释掉
+          /// 这里是首页配置，如果不需要首页，则不需要配置。
           home: RefreshConfiguration(
             enableLoadingWhenNoData: false,
-            child: startPage,
+            child: widget.startPage,
           ),
         );
       },

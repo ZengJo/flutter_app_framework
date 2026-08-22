@@ -1,0 +1,89 @@
+{
+  "@@locale": "en",
+  "appName": "Flutter App Framework",
+  "commonFollowSystem": "Follow system",
+  "commonSystemDefault": "System default",
+  "commonUnknownError": "Unknown error",
+  "commonRequestTimeout": "Request timed out",
+  "networkUnavailable": "Network unavailable. Actions will sync when the connection returns.",
+  "networkOfflinePending": "Offline. {count} queued actions.",
+  "@networkOfflinePending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "networkRecoveredReplaying": "Connection restored. Syncing {count} queued actions…",
+  "@networkRecoveredReplaying": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "networkSyncComplete": "Sync complete",
+  "errorLoginExpired": "Your session has expired. Please sign in again.",
+  "errorParameterMismatch": "Invalid request parameters",
+  "errorOperationFailed": "Operation failed",
+  "errorJsonParseFailed": "Failed to parse JSON",
+  "errorMethodValidationFailed": "Parameter validation failed",
+  "errorRetryLater": "Please try again later",
+  "errorUnknownEventType": "Unknown event type",
+  "errorFilePathEmpty": "File path cannot be empty",
+  "errorFilePathInvalidCharacters": "File path contains invalid characters",
+  "errorFileNameSuffixRequired": "The file name must contain a valid extension",
+  "errorFileSuffixInvalid": "The file extension must contain 1–10 letters or numbers",
+  "errorFilePathInvalid": "The file path format is invalid",
+  "errorPlatformVersionMissing": "Platform version information is unavailable",
+  "errorDataInvalid": "Invalid data",
+  "errorLoginFailed": "Sign-in failed",
+  "errorUserNotFound": "User not found",
+  "errorIncorrectPassword": "Incorrect password",
+  "permissionMicrophone": "Microphone",
+  "permissionCamera": "Camera",
+  "permissionPhotos": "Photos",
+  "permissionNotification": "Notifications",
+  "permissionPhone": "Phone",
+  "permissionAudio": "Audio",
+  "permissionStorage": "Storage",
+  "permissionWifi": "Wi-Fi",
+  "permissionBluetooth": "Bluetooth",
+  "permissionLocation": "Location",
+  "permissionGeneric": "Permission",
+  "permissionOpenSettings": "{permission} permission is disabled. Please enable it in Settings.",
+  "@permissionOpenSettings": {
+    "placeholders": {
+      "permission": {
+        "type": "String"
+      }
+    }
+  },
+  "globalizationLanguage": "Language",
+  "globalizationRegion": "Region",
+  "globalizationCurrency": "Currency",
+  "globalizationTimeZone": "Time zone",
+  "globalizationUnits": "Units",
+  "globalizationTimeFormat": "Time format",
+  "globalizationMetric": "Metric",
+  "globalizationImperial": "Imperial",
+  "globalization12Hour": "12-hour",
+  "globalization24Hour": "24-hour",
+  "languageEnglish": "English",
+  "languageSimplifiedChinese": "Simplified Chinese",
+  "languageArabic": "Arabic",
+  "orderFlowTitle": "Order Flow",
+  "orderStatusLabel": "Status",
+  "orderCreate": "Create order",
+  "orderPay": "Pay",
+  "orderStatusInitial": "Initial",
+  "orderStatusCreating": "Creating order",
+  "orderStatusPendingPayment": "Pending payment",
+  "orderStatusPaying": "Processing payment",
+  "orderStatusPaid": "Paid",
+  "orderStatusCompleted": "Completed",
+  "orderStatusFailure": "Failed",
+  "orderMessageCreatedPendingPayment": "Order created. Waiting for payment.",
+  "orderMessagePaymentSucceeded": "Payment successful.",
+  "orderMessageCompleted": "Order completed."
+}

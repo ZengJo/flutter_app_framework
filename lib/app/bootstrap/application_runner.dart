@@ -34,10 +34,10 @@ void runAppHandle(
           alignment: Alignment.center,
           children: [
             Application(startPage: startPage),
-            const Positioned(
+            const PositionedDirectional(
               top: 0,
-              left: 0,
-              right: 0,
+              start: 0,
+              end: 0,
               child: NetworkStatusBanner(),
             ),
           ],

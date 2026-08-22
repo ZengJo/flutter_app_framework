@@ -1,9 +1,12 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
 
+import '../../../app/config/app_globals.dart';
 import '../../../shared/widgets/feedback/app_toast.dart';
 import '../../../shared/widgets/feedback/loading_overlay.dart';
+import '../../globalization/generated/app_localizations.dart';
 import '../../storage/preferences_service.dart';
 import '../../storage/storage_keys.dart';
 import '../../utils/input_validator.dart';
@@ -157,7 +160,17 @@ Future<dynamic> _handleResponse(
       final msg = data['msg'];
       if (msg is String && msg.isNotEmpty && code != 200) {
         if (code == 401) {
-          AppToast.show('登录过期，请重新登录');
+          final context = maybeGlobalContext;
+          final l10n = context == null
+              ? null
+              : Localizations.of<AppLocalizations>(
+                  context,
+                  AppLocalizations,
+                );
+          AppToast.show(
+            l10n?.errorLoginExpired ??
+                'Your session has expired. Please sign in again.',
+          );
           return null;
         }
 

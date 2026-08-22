@@ -2,22 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/device/device_info_service.dart';
+import '../../../core/globalization/extensions/localization_context_x.dart';
 import '../../../core/network/providers/network_providers.dart';
 import '../../../core/network/providers/offline_queue_state_provider.dart';
 
-/// 网络状态栏
+/// 网络状态栏。
+///
+/// 所有用户可见文案来自 ARB，切换语言后会自动刷新。
 class NetworkStatusBanner extends ConsumerWidget {
   const NetworkStatusBanner({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    /// 网络状态
     final networkAsync = ref.watch(networkStateProvider);
-
-    /// 离线队列状态
     final queueAsync = ref.watch(offlineQueueStateProvider);
 
-    /// 构建网络状态栏
     return networkAsync.when(
       data: (network) {
         return queueAsync.when(
@@ -47,26 +46,29 @@ class NetworkStatusBanner extends ConsumerWidget {
 }
 
 class _OfflineBanner extends StatelessWidget {
-  final bool isOffline;
-  final int pending;
-  final bool replaying;
-
   const _OfflineBanner({
     required this.isOffline,
     required this.pending,
     required this.replaying,
   });
 
+  final bool isOffline;
+  final int pending;
+  final bool replaying;
+
   @override
   Widget build(BuildContext context) {
-    String text;
+    final l10n = context.l10n;
 
+    final String text;
     if (isOffline) {
-      text = pending > 0 ? '离线中，已缓存 $pending 条操作' : '网络不可用，操作将在恢复后同步';
+      text = pending > 0
+          ? l10n.networkOfflinePending(pending)
+          : l10n.networkUnavailable;
     } else if (replaying) {
-      text = '网络已恢复，正在同步 $pending 条操作…';
+      text = l10n.networkRecoveredReplaying(pending);
     } else {
-      text = '同步完成';
+      text = l10n.networkSyncComplete;
     }
 
     return Container(
@@ -78,7 +80,13 @@ class _OfflineBanner extends StatelessWidget {
         children: [
           const Icon(Icons.wifi_off, size: 16, color: Colors.white),
           const SizedBox(width: 6),
-          Text(text, style: const TextStyle(color: Colors.white, fontSize: 12)),
+          Flexible(
+            child: Text(
+              text,
+              textAlign: TextAlign.start,
+              style: const TextStyle(color: Colors.white, fontSize: 12),
+            ),
+          ),
         ],
       ),
     );

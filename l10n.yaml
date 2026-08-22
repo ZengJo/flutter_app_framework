@@ -1,0 +1,23 @@
+# ARB 源文件目录。
+arb-dir: lib/l10n
+
+# 英文作为模板语言，新增文案先在这里声明。
+template-arb-file: app_en.arb
+
+# 生成文件名。
+output-localization-file: app_localizations.dart
+
+# 生成类名。
+output-class: AppLocalizations
+
+# 生成到真实源码目录，不使用旧的 package:flutter_gen synthetic package。
+synthetic-package: false
+
+# 将生成文件统一放到 Globalization 模块内部。
+output-dir: lib/core/globalization/generated
+
+# AppLocalizations.of(context) 返回非空类型，业务代码不需要反复写 !。
+nullable-getter: false
+
+# 生成后自动格式化 Dart 文件。
+format: true

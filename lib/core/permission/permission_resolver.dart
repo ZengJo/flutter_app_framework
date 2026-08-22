@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../globalization/generated/app_localizations.dart';
+
 import 'permission_request.dart';
 
 class PermissionResolver {
@@ -102,45 +104,48 @@ class PermissionResolver {
     return const [];
   }
 
-  Future<String> resolveLabel(Permission permission) async {
+  /// 根据当前语言返回权限名称。
+  Future<String> resolveLabel(
+    Permission permission,
+    AppLocalizations l10n,
+  ) async {
     if (permission == Permission.microphone) {
-      return PermissionRequest.microphone.label;
+      return l10n.permissionMicrophone;
     }
 
     if (permission == Permission.camera) {
-      return PermissionRequest.camera.label;
+      return l10n.permissionCamera;
     }
 
     if (permission == Permission.notification) {
-      return PermissionRequest.notification.label;
+      return l10n.permissionNotification;
     }
 
     if (permission == Permission.phone) {
-      return PermissionRequest.phone.label;
+      return l10n.permissionPhone;
     }
 
     if (permission == Permission.photos) {
-      return PermissionRequest.photos.label;
+      return l10n.permissionPhotos;
     }
 
     if (permission == Permission.location) {
-      return "定位";
+      return l10n.permissionLocation;
     }
 
     if (permission == Permission.bluetooth ||
         permission == Permission.bluetoothScan ||
         permission == Permission.bluetoothConnect) {
-      return PermissionRequest.bluetooth.label;
+      return l10n.permissionBluetooth;
     }
 
     if (permission == Permission.storage) {
       if (Platform.isAndroid && (await androidSdkInt()) < 33) {
-        return PermissionRequest.photos.label;
+        return l10n.permissionPhotos;
       }
-
-      return PermissionRequest.storage.label;
+      return l10n.permissionStorage;
     }
 
-    return "权限";
+    return l10n.permissionGeneric;
   }
 }
