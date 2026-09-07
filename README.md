@@ -6,25 +6,26 @@
 
 ## App Layer Classes
 
-| Class / File              | 作用                                                         |
-| ------------------------- | ------------------------------------------------------------ |
-| `Application`             | App 根组件，负责挂载 `MaterialApp`、主题、路由等应用级配置。 |
-| `ApplicationBootstrapper` | 应用启动引导器，负责统一执行启动前初始化任务。               |
-| `ApplicationInitTask`     | 启动任务模型，用于描述一个初始化任务。                       |
-| `ApplicationInitializer`  | 初始化任务执行器，负责按顺序执行多个启动任务。               |
-| `BootstrapContext`        | 启动上下文，用于在初始化阶段传递全局依赖或配置。             |
-| `runAppHandle`            | App 启动封装函数，用于统一处理异常、初始化和运行 App。       |
-| `ApplicationConfig`       | 应用配置类，统一管理 App 名称、接口地址、环境配置等。        |
-| `AppEnvironment`          | 应用环境枚举，区分 `development`、`staging`、`production`。  |
-| `AppEnvironmentX`         | 环境枚举扩展，用于获取环境名称、是否生产环境等辅助信息。     |
-| `globalKeyNavigatorKey`   | 全局导航 Key，用于在非 Widget 场景下执行页面跳转。           |
-| `PageScope`               | 页面级依赖作用域，用于在页面树中传递页面状态或依赖。         |
-| `AppNavigator`            | 应用导航管理器，统一封装页面跳转、返回、替换等导航操作。     |
-| `AppRouter`               | 应用导航管理路由                                             |
-| `AppPageRoute`            | 自定义页面路由，统一页面切换动画和路由行为。                 |
-| `RouteObserverService`    | 路由监听服务，用于监听页面进入、退出、切换等生命周期。       |
-| `RouteNames`              | 路由名称常量类，统一管理页面路由字符串。                     |
-| `AppTheme`                | 应用主题类，统一管理亮色主题、暗色主题、颜色和字体样式。     |
+| Class / File              | 作用                                                                                                        |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `Application`             | App 根组件，负责挂载 `MaterialApp`、主题、路由等应用级配置。                                                |
+| `ApplicationBootstrapper` | 应用启动引导器，负责统一执行启动前初始化任务。                                                              |
+| `ApplicationInitTask`     | 启动任务模型，用于描述一个初始化任务。                                                                      |
+| `ApplicationInitializer`  | 初始化任务执行器，负责按顺序执行多个启动任务。                                                              |
+| `BootstrapContext`        | 启动上下文，用于在初始化阶段传递全局依赖或配置。                                                            |
+| `runAppHandle`            | App 启动封装函数，用于统一处理异常、初始化和运行 App。                                                      |
+| `ApplicationConfig`       | 应用配置类，统一管理 App 名称、接口地址、环境配置等。                                                       |
+| `AppEnvironment`          | 应用环境枚举，区分 `development`、`staging`、`production`。                                                 |
+| `AppEnvironmentX`         | 环境枚举扩展，用于获取环境名称、是否生产环境等辅助信息。                                                    |
+| `globalKeyNavigatorKey`   | 全局导航 Key，用于在非 Widget 场景下执行页面跳转。                                                          |
+| `PageScope`               | 页面级依赖作用域，用于在页面树中传递页面状态或依赖。                                                        |
+| `AppNavigator`            | 应用导航管理器，统一封装页面跳转、返回、替换等导航操作。                                                    |
+| `AppRouter`               | 应用导航管理路由                                                                                            |
+| `AppPageRoute`            | 自定义页面路由，统一页面切换动画和路由行为。                                                                |
+| `RouteObserverService`    | 路由监听服务，用于监听页面进入、退出、切换等生命周期。                                                      |
+| `RouteNames`              | 路由名称常量类，统一管理页面路由字符串。                                                                    |
+| `AppTheme`                | 应用主题类，统一管理亮色主题、暗色主题、颜色和字体样式。                                                    |
+| `EnvConfig`               | 运行环境参数读取类，统一读取 `dart-define` / `dart-define-from-file` 传入的环境、API 地址、调试开关等配置。 |
 
 ---
 
@@ -620,3 +621,269 @@ OrderRepository
 先放 features
 真正复用后再抽到 shared 或 core
 ```
+
+## EnvConfig
+
+`EnvConfig` 用于统一读取通过 Flutter 编译 / 运行命令传入的环境参数。
+
+文件位置：
+
+```text
+lib/
+└── core/
+    └── config/
+        └── app_env.dart
+```
+
+主要用于管理：
+
+- 当前运行环境
+- API 地址
+- WebSocket 地址
+- 日志开关
+- UME 调试工具开关
+- MQTT 等第三方服务地址
+- 其他需要根据运行环境切换的配置
+
+示例：
+
+```dart
+class EnvConfig {
+  EnvConfig._();
+
+  /// 当前环境
+  static const String env = String.fromEnvironment(
+    'ENV',
+    defaultValue: 'dev',
+  );
+
+  /// 是否启用 UME
+  static const bool enableUme = bool.fromEnvironment(
+    'ENABLE_UME',
+    defaultValue: false,
+  );
+
+  /// 是否启用日志
+  static const bool enableLog = bool.fromEnvironment(
+    'ENABLE_LOG',
+    defaultValue: false,
+  );
+
+  /// API 地址
+  static const String apiBaseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: '',
+  );
+
+  /// WebSocket 地址
+  static const String wsUrl = String.fromEnvironment(
+    'WS_URL',
+    defaultValue: '',
+  );
+
+  /// 是否开发环境
+  static bool get isDev => env == 'dev';
+
+  /// 是否测试环境
+  static bool get isTest => env == 'test';
+
+  /// 是否生产环境
+  static bool get isProd => env == 'prod';
+}
+```
+
+---
+
+### 环境配置文件
+
+推荐在项目根目录创建：
+
+```text
+env/
+├── dev.json
+├── test.json
+└── prod.json
+```
+
+开发环境：
+
+```json
+{
+  "ENV": "dev",
+  "ENABLE_UME": true,
+  "ENABLE_LOG": true,
+  "API_BASE_URL": "https://dev-api.example.com",
+  "WS_URL": "wss://dev-ws.example.com"
+}
+```
+
+生产环境：
+
+```json
+{
+  "ENV": "prod",
+  "ENABLE_UME": false,
+  "ENABLE_LOG": false,
+  "API_BASE_URL": "https://api.example.com",
+  "WS_URL": "wss://ws.example.com"
+}
+```
+
+---
+
+### 运行方式
+
+开发环境：
+
+```bash
+flutter run --dart-define-from-file=env/dev.json
+```
+
+测试环境：
+
+```bash
+flutter run --dart-define-from-file=env/test.json
+```
+
+生产环境：
+
+```bash
+flutter run --dart-define-from-file=env/prod.json
+```
+
+也可以单独传入参数：
+
+```bash
+flutter run --dart-define=ENABLE_UME=true
+```
+
+或者在环境文件基础上临时覆盖某个配置：
+
+```bash
+flutter run \
+  --dart-define-from-file=env/dev.json \
+  --dart-define=ENABLE_UME=false
+```
+
+---
+
+### UME 使用
+
+`runAppHandle` 根据 `EnvConfig.enableUme` 决定是否注册并挂载 `UMEWidget`。
+
+```dart
+if (EnvConfig.enableUme) {
+  PluginManager.instance
+    ..register(const ShowCode())
+    ..register(const DeviceInfoPanel())
+    ..register(const MemoryInfoPage())
+    ..register(CpuInfoPage())
+    ..register(Console())
+    ..register(Performance())
+    ..register(
+      DioInspector(
+        dio: DioClientHolder.instance.dio,
+      ),
+    );
+
+  app = UMEWidget(
+    icon: const FlutterLogo(),
+    enable: true,
+    child: app,
+  );
+}
+```
+
+这样：
+
+```text
+dev
+↓
+ENABLE_UME = true
+↓
+启用 UME
+```
+
+生产环境：
+
+```text
+prod
+↓
+ENABLE_UME = false
+↓
+不创建 UMEWidget
+```
+
+---
+
+### EnvConfig 与 ApplicationConfig 的区别
+
+两者职责不要混在一起。
+
+```text
+EnvConfig
+↓
+读取编译 / 运行时传入的环境变量
+
+ApplicationConfig
+↓
+组织应用最终实际使用的配置
+```
+
+例如：
+
+```text
+--dart-define
+        ↓
+     EnvConfig
+        ↓
+ApplicationConfig
+        ↓
+Network / WebSocket / Logger / App
+```
+
+`EnvConfig` 更接近底层环境变量读取器。
+
+`ApplicationConfig` 则用于把这些配置进一步整理成应用可以直接使用的配置对象。
+
+---
+
+### Best Practice
+
+业务代码不要大量直接使用：
+
+```dart
+String.fromEnvironment(...)
+```
+
+统一通过：
+
+```dart
+EnvConfig.xxx
+```
+
+读取。
+
+例如：
+
+```dart
+EnvConfig.apiBaseUrl
+EnvConfig.wsUrl
+EnvConfig.enableLog
+EnvConfig.enableUme
+```
+
+这样后续增加、修改环境参数时，只需要维护 `EnvConfig`。
+
+同时不要在环境配置文件中保存真正的安全密钥。
+
+例如以下内容不能因为使用了 `dart-define` 就认为是安全的：
+
+```text
+数据库密码
+服务器私钥
+支付平台 Secret Key
+后端永久 Token
+```
+
+Flutter 客户端最终仍然会把相关配置编译进应用，因此客户端只应该保存允许暴露给客户端的配置。

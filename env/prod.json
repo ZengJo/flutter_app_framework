@@ -1,0 +1,7 @@
+{
+    "ENV": "prod",
+    "ENABLE_UME": false,
+    "API_BASE_URL": "",
+    "WS_URL": "",
+    "ENABLE_LOG": false
+  }
