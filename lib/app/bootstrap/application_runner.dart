@@ -3,17 +3,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/config/config_env.dart';
 import '../../core/network/client/dio_holder.dart';
 import '../../shared/widgets/feedback/network_status_banner.dart';
 import '../app.dart';
 
 /// 运行应用
-void runAppHandle(
-  Widget startPage,
-  ProviderContainer container, {
-  bool needRegisterUme = true,
-}) {
-  if (needRegisterUme) {
+void runAppHandle(Widget startPage, ProviderContainer container) {
+  Widget app = Stack(
+    alignment: Alignment.center,
+    children: [
+      Application(startPage: startPage),
+      const Positioned(top: 0, left: 0, right: 0, child: NetworkStatusBanner()),
+    ],
+  );
+
+  if (EnvConfig.enableUme) {
     PluginManager.instance
       ..register(const ShowCode())
       ..register(const DeviceInfoPanel())
@@ -22,27 +27,7 @@ void runAppHandle(
       ..register(Console())
       ..register(Performance())
       ..register(DioInspector(dio: DioClientHolder.instance.dio));
+    app = UMEWidget(icon: const FlutterLogo(), enable: true, child: app);
   }
-
-  runApp(
-    UncontrolledProviderScope(
-      container: container,
-      child: UMEWidget(
-        icon: const FlutterLogo(),
-        enable: true,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Application(startPage: startPage),
-            const PositionedDirectional(
-              top: 0,
-              start: 0,
-              end: 0,
-              child: NetworkStatusBanner(),
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
+  runApp(UncontrolledProviderScope(container: container, child: app));
 }

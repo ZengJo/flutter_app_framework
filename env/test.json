@@ -1,0 +1,7 @@
+{
+    "ENV": "test",
+    "ENABLE_UME": true,
+    "API_BASE_URL": "",
+    "WS_URL": "",
+    "ENABLE_LOG": true
+  }

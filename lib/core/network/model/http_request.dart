@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_app_framework/core/config/config_env.dart';
 
 import '../../../app/config/app_globals.dart';
 import '../../../shared/widgets/feedback/app_toast.dart';
@@ -15,8 +16,6 @@ import '../exceptions/http_error_handler.dart';
 import '../headers/request_headers.dart';
 import '../offline_queue/offline_request.dart';
 import '../utils/idempotency_key_generator.dart';
-
-const String defaultBaseUrl = 'https://api.ymdq.com';
 
 enum RequestMethod { get, post, put, delete, head, upload }
 
@@ -71,7 +70,7 @@ Future<dynamic> request(
 
   options.headers?.addAll(await RequestHeaders.getHeaders());
 
-  final requestUrl = '${baseUrl ?? defaultBaseUrl}$url';
+  final requestUrl = '${baseUrl ?? EnvConfig.apiBaseUrl}$url';
 
   try {
     final response = await _sendRequest(
@@ -163,10 +162,7 @@ Future<dynamic> _handleResponse(
           final context = maybeGlobalContext;
           final l10n = context == null
               ? null
-              : Localizations.of<AppLocalizations>(
-                  context,
-                  AppLocalizations,
-                );
+              : Localizations.of<AppLocalizations>(context, AppLocalizations);
           AppToast.show(
             l10n?.errorLoginExpired ??
                 'Your session has expired. Please sign in again.',

@@ -74,7 +74,7 @@ class ApplicationBootstrapper {
     return container;
   }
 
-  void _run(Widget startPage, {bool needRegisterUme = true}) {
-    runAppHandle(startPage, _container, needRegisterUme: needRegisterUme);
+  void _run(Widget startPage) {
+    runAppHandle(startPage, _container);
   }
 }

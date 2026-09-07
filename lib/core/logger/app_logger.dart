@@ -1,13 +1,15 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter_app_framework/core/config/config_env.dart';
 import 'package:logger/logger.dart';
 
 class AppLogger {
   AppLogger._();
 
   static const int _chunkSize = 1000;
+
+  static bool get _enableLog => EnvConfig.enableLog;
 
   static final Logger _logger = Logger(
     printer: PrettyPrinter(
@@ -18,24 +20,25 @@ class AppLogger {
       printEmojis: true,
       dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart,
     ),
-    level: kReleaseMode ? Level.warning : Level.trace,
+    level: EnvConfig.isProd ? Level.warning : Level.trace,
   );
-
-  static bool get _enableNetworkLog => !kReleaseMode;
 
   // =========================
   // Basic Log
   // =========================
 
   static void trace(dynamic message, [dynamic error, StackTrace? stackTrace]) {
+    if (!_enableLog) return;
     _logger.t('⚪ TRACE | $message', error: error, stackTrace: stackTrace);
   }
 
   static void debug(dynamic message, [dynamic error, StackTrace? stackTrace]) {
+    if (!_enableLog) return;
     _logger.d('🔵 DEBUG | $message', error: error, stackTrace: stackTrace);
   }
 
   static void info(dynamic message, [dynamic error, StackTrace? stackTrace]) {
+    if (!_enableLog) return;
     _logger.i('🟢 INFO  | $message', error: error, stackTrace: stackTrace);
   }
 
@@ -44,14 +47,17 @@ class AppLogger {
     dynamic error,
     StackTrace? stackTrace,
   ]) {
+    if (!_enableLog) return;
     _logger.w('🟡 WARN  | $message', error: error, stackTrace: stackTrace);
   }
 
   static void error(dynamic message, [dynamic error, StackTrace? stackTrace]) {
+    if (!_enableLog) return;
     _logger.e('🔴 ERROR | $message', error: error, stackTrace: stackTrace);
   }
 
   static void fatal(dynamic message, [dynamic error, StackTrace? stackTrace]) {
+    if (!_enableLog) return;
     _logger.f('💀 FATAL | $message', error: error, stackTrace: stackTrace);
   }
 
@@ -60,19 +66,22 @@ class AppLogger {
   // =========================
 
   static void network(String message) {
-    if (!_enableNetworkLog) return;
+    if (!_enableLog) return;
     _printLong('🌐 NETWORK\n$message');
   }
 
   static void mqtt(String message) {
+    if (!_enableLog) return;
     _printLong('📡 MQTT\n$message');
   }
 
   static void bluetooth(String message) {
+    if (!_enableLog) return;
     _printLong('📶 BLE\n$message');
   }
 
   static void device(String message) {
+    if (!_enableLog) return;
     _printLong('🤖 DEVICE\n$message');
   }
 
@@ -81,6 +90,7 @@ class AppLogger {
   // =========================
 
   static void json(dynamic data, {Level level = Level.debug}) {
+    if (!_enableLog) return;
     _printLong(_pretty(data), level: level);
   }
 
@@ -89,8 +99,7 @@ class AppLogger {
   // =========================
 
   static void request(RequestOptions options) {
-    if (!_enableNetworkLog) return;
-
+    if (!_enableLog) return;
     final message =
         '''
       🟦 REQUEST
@@ -111,8 +120,7 @@ class AppLogger {
   }
 
   static void response(Response response) {
-    if (!_enableNetworkLog) return;
-
+    if (!_enableLog) return;
     final message =
         '''
       🟩 RESPONSE
@@ -127,6 +135,7 @@ class AppLogger {
   }
 
   static void dioError(DioException error) {
+    if (!_enableLog) return;
     final message =
         '''
       🟥 ERROR
