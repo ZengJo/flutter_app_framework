@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_app_framework/core/config/config_env.dart';
 import 'package:logger/logger.dart';
+
+import '../config/config_env.dart';
 
 class AppLogger {
   AppLogger._();

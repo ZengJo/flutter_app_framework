@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app_framework/core/config/config_env.dart';
 
 import '../../../app/config/app_globals.dart';
 import '../../../shared/widgets/feedback/app_toast.dart';
 import '../../../shared/widgets/feedback/loading_overlay.dart';
+import '../../config/config_env.dart';
 import '../../globalization/generated/app_localizations.dart';
 import '../../storage/preferences_service.dart';
 import '../../storage/storage_keys.dart';

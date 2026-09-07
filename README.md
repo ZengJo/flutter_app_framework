@@ -16,7 +16,6 @@
 | `runAppHandle`            | App 启动封装函数，用于统一处理异常、初始化和运行 App。                                                      |
 | `ApplicationConfig`       | 应用配置类，统一管理 App 名称、接口地址、环境配置等。                                                       |
 | `AppEnvironment`          | 应用环境枚举，区分 `development`、`staging`、`production`。                                                 |
-| `AppEnvironmentX`         | 环境枚举扩展，用于获取环境名称、是否生产环境等辅助信息。                                                    |
 | `globalKeyNavigatorKey`   | 全局导航 Key，用于在非 Widget 场景下执行页面跳转。                                                          |
 | `PageScope`               | 页面级依赖作用域，用于在页面树中传递页面状态或依赖。                                                        |
 | `AppNavigator`            | 应用导航管理器，统一封装页面跳转、返回、替换等导航操作。                                                    |
