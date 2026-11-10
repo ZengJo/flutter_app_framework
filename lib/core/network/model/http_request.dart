@@ -23,7 +23,7 @@ Future<dynamic> request(
   RequestMethod method = RequestMethod.post,
   String contentType = Headers.jsonContentType,
   ResponseType responseType = ResponseType.json,
-  bool authorization = true,
+  bool authorization = false,
   bool isLoading = true,
   CancelToken? cancelToken,
   Map<String, dynamic>? headers,
@@ -46,7 +46,7 @@ Future<dynamic> request(
     responseType: responseType,
     receiveDataWhenStatusError: false,
     followRedirects: false,
-    validateStatus: (status) => status != null && status < 401,
+    validateStatus: (status) => status != null && status < 500,
     headers: <String, dynamic>{
       ...?headers,
       'Idempotency-Key': finalIdempotencyKey,
@@ -61,13 +61,17 @@ Future<dynamic> request(
 
   if (authorization) {
     final accessToken = await PreferencesService.get(StorageKeys.token);
-    if (!InputValidator.isVerifyNotEmpty(accessToken)) return null;
+    if (!InputValidator.isVerifyNotEmpty(accessToken)) {
+      throw StateError('需要登录态，但本地没有 access token。');
+    }
     options.headers?['Authorization'] = 'Bearer $accessToken';
   }
 
   options.headers?.addAll(await RequestHeaders.getHeaders());
 
-  final requestUrl = '${baseUrl ?? EnvConfig.apiBaseUrl}$url';
+  final requestUrl = _resolveRequestUrl(url, baseUrl);
+
+  if (isLoading) LoadingOverlay.instance.show();
 
   try {
     final response = await _sendRequest(
@@ -173,10 +177,27 @@ Future<dynamic> _handleResponse(
   }
 
   if (statusCode == 400) return response.data;
-  if (statusCode == 401) return null;
+  if (statusCode == 401) {
+    AppToast.show('登录过期，请重新登录');
+    return null;
+  }
   if (statusCode == 404) return statusCode;
 
   return null;
+}
+
+String _resolveRequestUrl(String url, String? baseUrl) {
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+
+  final root = baseUrl ?? EnvConfig.apiBaseUrl;
+  if (root.isEmpty) return url;
+  if (url.isEmpty) return root;
+
+  final normalizedRoot = root.endsWith('/')
+      ? root.substring(0, root.length - 1)
+      : root;
+  final normalizedPath = url.startsWith('/') ? url : '/$url';
+  return '$normalizedRoot$normalizedPath';
 }
 
 dynamic _decodeResponseData(dynamic data) {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -9,37 +8,40 @@ import 'app/config/app_globals.dart';
 import 'app/config/application_config.dart';
 import 'app/navigation/app_navigator.dart';
 import 'app/navigation/app_router.dart';
-import 'app/navigation/route_names.dart';
 import 'app/theme/app_theme.dart';
+import 'shared/widgets/feedback/network_status_banner.dart';
 
 Future<void> main() async {
   await ApplicationBootstrapper.instance.bootstrap();
 }
 
-class Application extends ConsumerWidget {
+class Application extends StatelessWidget {
   const Application({super.key, required this.startPage});
 
   final Widget startPage;
 
+  /// MaterialApp 还没挂上时没有 MediaQuery，用 View 计算逻辑尺寸。
+  Size _designSize(BuildContext context) {
+    final view = View.of(context);
+    final ratio = view.devicePixelRatio == 0 ? 1.0 : view.devicePixelRatio;
+    final shortestSide = view.physicalSize.shortestSide / ratio;
+    return shortestSide > 600 ? const Size(1112, 710) : const Size(375, 812);
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: MediaQuery.sizeOf(context).shortestSide > 600
-          ? const Size(1112, 710)
-          : const Size(375, 812),
+      designSize: _designSize(context),
       minTextAdapt: true,
       splitScreenMode: true,
       rebuildFactor: RebuildFactors.size,
       builder: (context, child) {
         return MaterialApp(
-          ///这里是路由跳转页面配置，如果不需要路由跳转，则不需要配置
-          initialRoute: RouteNames.example,
-
-          ///这里是路由跳转页面配置，如果不需要路由跳转，则不需要配置
+          /// 命名路由只负责后续跳转。首页由 bootstrap 传入的 startPage 决定。
           onGenerateRoute: AppRouter.onGenerateRoute,
           title: ApplicationConfig.appName,
           navigatorKey: globalKeyNavigatorKey,
-          navigatorObservers: [RouteObserverService()],
+          navigatorObservers: [RouteObserverService.instance],
           theme: AppTheme.light(),
           darkTheme: AppTheme.dark(),
           debugShowCheckedModeBanner: false,
@@ -49,7 +51,17 @@ class Application extends ConsumerWidget {
                 data: MediaQuery.of(
                   context,
                 ).copyWith(textScaler: const TextScaler.linear(1)),
-                child: child ?? const SizedBox.shrink(),
+                child: Stack(
+                  children: [
+                    child ?? const SizedBox.shrink(),
+                    const Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: NetworkStatusBanner(),
+                    ),
+                  ],
+                ),
               );
             },
           ),

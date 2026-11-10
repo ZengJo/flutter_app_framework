@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
 
 import '../../logger/app_logger.dart';
 import '../connectivity/network_monitor.dart';
+import '../connectivity/network_state.dart';
 import 'offline_queue_state.dart';
 import 'offline_queue_storage.dart';
 import 'offline_request.dart';
@@ -35,7 +37,10 @@ class OfflineQueueManager {
   Timer? _replayDebounceTimer;
 
   /// 网络变化监听
-  late final StreamSubscription _netSub;
+  StreamSubscription<NetworkState>? _netSub;
+
+  /// 初始化过程。重复调用返回同一次 Future。
+  Future<void>? _ready;
 
   /// 重放中
   bool _replaying = false;
@@ -49,8 +54,15 @@ class OfflineQueueManager {
     required this.storage,
   });
 
+  /// 本地队列读取完成。
+  Future<void> get ready => init();
+
   /// 初始化
-  Future<void> init() async {
+  Future<void> init() {
+    return _ready ??= _init();
+  }
+
+  Future<void> _init() async {
     AppLogger.info('[Queue] manager init');
     _queue.addAll(await storage.loadQueue());
     _dead.addAll(await storage.loadDead());
@@ -90,14 +102,29 @@ class OfflineQueueManager {
     _emit();
   }
 
-  /// 判断是否重复
+  /// 有幂等键时只按键去重。没有键时才比较方法、路径和内容。
   bool _isDuplicate(OfflineRequest req) {
+    if (req.idempotencyKey.isNotEmpty) {
+      return _queue.any((e) => e.idempotencyKey == req.idempotencyKey);
+    }
+
     return _queue.any(
       (e) =>
-          (req.idempotencyKey.isNotEmpty &&
-              e.idempotencyKey == req.idempotencyKey) ||
-          (e.method == req.method && e.path == req.path),
+          e.idempotencyKey.isEmpty &&
+          e.method == req.method &&
+          e.path == req.path &&
+          _samePayload(e.query, req.query) &&
+          _samePayload(e.body, req.body),
     );
+  }
+
+  bool _samePayload(Object? left, Object? right) {
+    if (identical(left, right)) return true;
+    try {
+      return jsonEncode(left) == jsonEncode(right);
+    } catch (_) {
+      return left == right;
+    }
   }
 
   /// 排序
@@ -217,7 +244,7 @@ class OfflineQueueManager {
   /// 释放资源
   void dispose() {
     _replayDebounceTimer?.cancel();
-    _netSub.cancel();
-    _stateCtrl.close();
+    _netSub?.cancel();
+    if (!_stateCtrl.isClosed) _stateCtrl.close();
   }
 }

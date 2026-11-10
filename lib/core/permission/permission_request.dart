@@ -31,6 +31,7 @@ extension PermissionRequestExt on PermissionRequest {
         return Permission.storage;
 
       case PermissionRequest.audio:
+        return Permission.audio;
       case PermissionRequest.photos:
       case PermissionRequest.wifi:
       case PermissionRequest.bluetooth:

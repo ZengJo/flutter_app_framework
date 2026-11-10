@@ -19,8 +19,18 @@ class NetworkMonitor {
   /// 网络变化监听
   StreamSubscription<List<ConnectivityResult>>? _sub;
 
-  /// 网络状态流
-  Stream<NetworkState> get stream => _controller.stream;
+  /// 网络状态流。新的订阅会先收到当前状态，避免启动阶段的结果被广播流丢掉。
+  Stream<NetworkState> get stream {
+    return Stream<NetworkState>.multi((listener) {
+      listener.add(_state);
+      final subscription = _controller.stream.listen(
+        listener.add,
+        onError: listener.addError,
+        onDone: listener.close,
+      );
+      listener.onCancel = subscription.cancel;
+    });
+  }
 
   /// 当前网络状态
   NetworkState get current => _state;

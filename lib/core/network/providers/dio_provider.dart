@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/config/application_config.dart';
+import '../../config/config_env.dart';
 import '../client/dio_holder.dart';
 import '../client/http_client.dart';
 import '../interceptors/logger_interceptor.dart';
@@ -11,6 +12,7 @@ final dioProvider = Provider<Dio>((ref) {
   /// Dio实例
   final dio = Dio(
     BaseOptions(
+      baseUrl: EnvConfig.apiBaseUrl,
       connectTimeout: ApplicationConfig.connectTimeout,
       receiveTimeout: ApplicationConfig.receiveTimeout,
     ),

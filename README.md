@@ -10,7 +10,7 @@
 
 | ------------------------- | ----------------------------------------------------------------------------------------------------------- |
 
-| `Application` | App 根组件，负责挂载 `MaterialApp`、主题、路由等应用级配置。 |
+| `Application` | App 根组件。首页是 bootstrap 传入的 `startPage`，命名路由只负责后续跳转。设计尺寸在 `MaterialApp` 之前通过 `View` 计算。网络状态条放在 `MaterialApp` 内部。 |
 
 | `ApplicationBootstrapper` | 应用启动引导器，负责统一执行启动前初始化任务。 |
 
@@ -22,9 +22,7 @@
 
 | `runAppHandle` | App 启动封装函数，用于统一处理异常、初始化和运行 App。 |
 
-| `ApplicationConfig` | 应用配置类，统一管理 App 名称、接口地址、环境配置等。 |
-
-| `AppEnvironment` | 应用环境枚举，区分 `development`、`staging`、`production`。 |
+| `ApplicationConfig` | 应用名称和 Dio 超时。接口地址由 `EnvConfig.apiBaseUrl` 提供。 |
 
 | `globalKeyNavigatorKey` | 全局导航 Key，用于在非 Widget 场景下执行页面跳转。 |
 
@@ -36,15 +34,38 @@
 
 | `AppPageRoute` | 自定义页面路由，统一页面切换动画和路由行为。 |
 
-| `RouteObserverService` | 路由监听服务，用于监听页面进入、退出、切换等生命周期。 |
+| `RouteObserverService` | 路由监听服务。`MaterialApp` 使用固定的 `RouteObserverService.instance`。 |
 
 | `RouteNames` | 路由名称常量类，统一管理页面路由字符串。 |
 
 | `AppTheme` | 应用主题类，统一管理亮色主题、暗色主题、颜色和字体样式。 |
 
-| `EnvConfig` | 运行环境参数读取类，统一读取 `dart-define` / `dart-define-from-file` 传入的环境、API 地址、调试开关等配置。 |
+| `EnvConfig` | 运行环境参数读取类，文件是 `lib/core/config/config_env.dart`。 |
 
 ---
+
+## 新项目包名
+
+新项目只改根目录的 `app_identity.yaml`，然后执行：
+
+```bash
+dart run tool/apply_identity.dart
+```
+
+先看会改哪些文件：
+
+```bash
+dart run tool/apply_identity.dart --check
+```
+
+| 字段 | 作用 |
+| --- | --- |
+| `dart_package` | `pubspec.yaml` 的 `name`、代码里的 `package:` 引用。和旧包名相同的 iOS `CFBundleName` 会一起改。 |
+| `application_id` | Android `applicationId`、`namespace`、Kotlin `package` 和目录，以及 iOS Bundle Identifier。测试 Target 会改成 `application_id.RunnerTests`。 |
+
+改完 `dart_package` 后执行 `flutter pub get`。脚本不会改应用显示名，也不会改 README 里作为上游仓库名出现的 `flutter_app_framework`。
+
+当前 Android 是 `com.bourne.flutterframework`，iOS 仍是 `com.example.flutterYmdqQszcccj`。执行同步脚本后，iOS 会改成配置文件里的 `application_id`。
 
 ## Core / Device Classes
 
@@ -220,7 +241,7 @@ core/
 
 | `PermissionRequest` | 权限枚举，业务层统一使用的权限类型。 |
 
-| `PermissionType` | 权限分类枚举，用于描述支持的权限类型。 |
+| `PermissionType` | 权限分类枚举，定义在 `permission_type.dart`。业务申请仍使用 `PermissionRequest`。 |
 
 | `PermissionResolver` | 权限解析器，根据平台和系统版本解析真实权限。 |
 

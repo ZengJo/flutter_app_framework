@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/logger/app_logger.dart';
@@ -185,7 +184,7 @@ class AppPageRoute<T> extends MaterialPageRoute<T> {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
-    if (!Platform.isAndroid) {
+    if (defaultTargetPlatform != TargetPlatform.android) {
       return Theme.of(context).pageTransitionsTheme.buildTransitions<T>(
         this,
         context,
@@ -205,6 +204,8 @@ class AppPageRoute<T> extends MaterialPageRoute<T> {
 }
 
 class RouteObserverService extends NavigatorObserver {
+  static final RouteObserverService instance = RouteObserverService();
+
   static final List<String> pageStack = <String>[];
 
   bool _isPage(Route<dynamic> route) => route is PageRoute<dynamic>;

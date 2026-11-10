@@ -16,6 +16,10 @@ final dioInterceptorsProvider = Provider<void>((ref) {
   /// 网络监控
   final monitor = ref.watch(networkMonitorProvider);
 
-  /// 添加离线队列拦截器
-  dio.interceptors.add(OfflineQueueInterceptor(monitor, queueManager, false));
+  dio.interceptors.removeWhere(
+    (interceptor) => interceptor is OfflineQueueInterceptor,
+  );
+
+  /// 是否入队由单次请求的 extra['offline'] 决定。
+  dio.interceptors.add(OfflineQueueInterceptor(monitor, queueManager));
 });

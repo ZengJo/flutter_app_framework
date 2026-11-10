@@ -30,6 +30,7 @@ class ApplicationBootstrapper {
 
     await _initBase();
     _container = _initDependencies();
+    await _container.read(offlineQueueManagerProvider).ready;
     _run(const OrderPage());
   }
 

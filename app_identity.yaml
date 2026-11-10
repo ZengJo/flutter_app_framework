@@ -1,0 +1,11 @@
+# 新项目只改这个文件，然后执行：
+#
+# dart run tool/apply_identity.dart
+#
+# dart_package：Dart 包名。会同步 pubspec name、package: 引用，以及与它相同的 iOS CFBundleName。
+# application_id：Android applicationId / namespace / Kotlin package，以及 iOS Bundle Identifier。
+#
+# 应用显示名不在这里修改。README 里作为上游仓库名出现的 flutter_app_framework 也不会被替换。
+
+dart_package: flutter_app_framework
+application_id: com.bourne.flutterframework

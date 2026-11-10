@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 /// Global loading overlay based on flutter_easyloading.
 class LoadingOverlay {
   static LoadingOverlay? _instance;
+  static bool _configured = false;
 
   static LoadingOverlay get instance => _resolve();
 
@@ -12,9 +13,11 @@ class LoadingOverlay {
 
   static LoadingOverlay _resolve() {
     _instance ??= LoadingOverlay();
+    if (_configured) return _instance!;
+
+    _configured = true;
     EasyLoading.instance.radius = 20.r;
     EasyLoading.instance.backgroundColor = Colors.black;
-    // EasyLoading.instance.backgroundColor = Colors.transparent;
     EasyLoading.instance.contentPadding = EdgeInsets.zero;
     EasyLoading.instance.maskType = EasyLoadingMaskType.black;
     EasyLoading.addStatusCallback((status) {
