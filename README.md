@@ -10,21 +10,19 @@
 
 | ------------------------- | ----------------------------------------------------------------------------------------------------------- |
 
-| `Application` | App 根组件，负责挂载 `MaterialApp`、主题、路由等应用级配置。 |
+| `Application` | App 根组件。首页是 bootstrap 传入的 `startPage`，命名路由只负责后续跳转。设计尺寸在 `MaterialApp` 之前通过 `View` 计算。网络状态条放在 `MaterialApp` 内部。 |
 
-| `ApplicationBootstrapper` | 应用启动引导器，负责统一执行启动前初始化任务。 |
+| `ApplicationBootstrapper` | 应用启动引导器。当前启动顺序见下方「启动顺序」。 |
 
 | `ApplicationInitTask` | 启动任务模型，用于描述一个初始化任务。 |
 
-| `ApplicationInitializer` | 初始化任务执行器，负责按顺序执行多个启动任务。 |
+| `ApplicationInitializer` | 可选的优先级任务执行器。当前 `ApplicationBootstrapper` 不调用它。 |
 
 | `BootstrapContext` | 启动上下文，用于在初始化阶段传递全局依赖或配置。 |
 
-| `runAppHandle` | App 启动封装函数，用于统一处理异常、初始化和运行 App。 |
+| `runAppHandle` | 挂载 `Application`。`EnvConfig.enableUme` 为 true 时再包一层 `UMEWidget`。 |
 
-| `ApplicationConfig` | 应用配置类，统一管理 App 名称、接口地址、环境配置等。 |
-
-| `AppEnvironment` | 应用环境枚举，区分 `development`、`staging`、`production`。 |
+| `ApplicationConfig` | 应用名称和 Dio 超时。接口地址不在这里，由 `EnvConfig.apiBaseUrl` 提供。 |
 
 | `globalKeyNavigatorKey` | 全局导航 Key，用于在非 Widget 场景下执行页面跳转。 |
 
@@ -36,15 +34,41 @@
 
 | `AppPageRoute` | 自定义页面路由，统一页面切换动画和路由行为。 |
 
-| `RouteObserverService` | 路由监听服务，用于监听页面进入、退出、切换等生命周期。 |
+| `RouteObserverService` | 路由监听服务。`MaterialApp` 使用固定的 `RouteObserverService.instance`，语言切换重建时不更换观察者。 |
 
 | `RouteNames` | 路由名称常量类，统一管理页面路由字符串。 |
 
 | `AppTheme` | 应用主题类，统一管理亮色主题、暗色主题、颜色和字体样式。 |
 
-| `EnvConfig` | 运行环境参数读取类，统一读取 `dart-define` / `dart-define-from-file` 传入的环境、API 地址、调试开关等配置。 |
+| `EnvConfig` | 运行环境参数读取类，统一读取 `dart-define` / `dart-define-from-file` 传入的环境、API 地址、调试开关等配置。文件是 `lib/core/config/config_env.dart`。 |
 
 ---
+
+## 启动顺序
+
+`ApplicationBootstrapper.bootstrap()` 是当前唯一启动入口：
+
+```text
+WidgetsFlutterBinding.ensureInitialized()
+        ↓
+屏幕方向、包信息、设备 ID
+        ↓
+GlobalizationBootstrap.load()
+        ↓
+RequestHeaders.initialize()
+        ↓
+创建 ProviderContainer，并注入 globalizationBootstrapProvider
+        ↓
+读取 globalization / network / dio / interceptors / offline queue
+        ↓
+等待 OfflineQueueManager.ready
+        ↓
+runAppHandle(OrderPage)
+```
+
+`MaterialApp.home` 就是这次传入的 `startPage`。不要再同时设置 `initialRoute`，否则 Flutter 会按路径拆出多层路由栈。语言设置页通过 `RouteNames.languageSettings` 进入。
+
+手机设计尺寸是 `375×812`。`View` 的最短边大于 600 时使用 `1112×710`。
 
 ## Core / Device Classes
 
@@ -54,6 +78,8 @@
 
 | `DeviceInfoService` | 设备信息服务，统一获取设备型号、系统版本、App 版本、包名等信息。 |
 
+| `AppPlatform` | 平台判断。有 `dart:io` 时读取真实系统，Web 使用占位实现，业务代码不直接 import `dart:io`。 |
+
 ---
 
 ## Core / Network Classes
@@ -62,11 +88,11 @@
 
 | ------------------------- | --------------------------------------------------------------- |
 
-| `DioClientHolder` | Dio 实例持有器，负责创建、配置、缓存和复用 Dio 实例。 |
+| `DioClientHolder` | Dio 实例持有器。`dioProvider` 创建 Dio 后把实例注入这里，`baseUrl` 使用 `EnvConfig.apiBaseUrl`。 |
 
 | `HttpClient` | 网络请求客户端，统一封装 GET、POST、PUT、DELETE 等请求。 |
 
-| `NetworkMonitor` | 网络状态监听器，用于监听当前设备是否联网。 |
+| `NetworkMonitor` | 网络状态监听器。新的订阅会先收到当前状态，避免启动阶段的结果被广播流丢掉。它表示系统连接状态，不探测真实外网连通性。 |
 
 | `Reachability` | 网络可达状态枚举，包含 `unknown`、`online`、`offline`。 |
 
@@ -74,15 +100,15 @@
 
 | `ResponseErrorHandler` | HTTP 响应错误处理器，统一处理接口错误、状态码异常等问题。 |
 
-| `RequestHeaders` | 请求头管理类，统一生成 Token、语言、版本号、设备信息等 Header。 |
+| `RequestHeaders` | 静态请求头，只包含平台、版本、设备信息。Token 由 `request()` 写入，语言、地区、货币、时区由 `GlobalizationInterceptor` 写入。 |
 
 | `RequestMethod` | 请求方法枚举，包含 GET、POST、PUT、DELETE、HEAD、UPLOAD。 |
 
-| `request` | 通用请求方法，用于根据请求参数统一发起网络请求。 |
+| `request` | 通用请求方法。默认不强制 token，`isLoading` 会显示并关闭加载层，`isOffline` 默认为 true。约定见下方「request 约定」。 |
 
-| `OfflineQueueInterceptor` | 离线请求拦截器，当网络不可用时拦截请求并加入离线队列。 |
+| `OfflineQueueInterceptor` | 仅当 `extra['offline'] == true` 且网络明确离线时入队并取消本次请求。重放请求和 `unknown` 状态直接放行。 |
 
-| `OfflineQueueManager` | 离线队列管理器，负责请求入队、重试、清理和恢复发送。 |
+| `OfflineQueueManager` | 离线队列管理器。`ready` 表示本地队列已读完。有幂等键时只按键去重；没有键时才比较方法、路径和内容。 |
 
 | `OfflineQueueState` | 离线队列状态模型，用于描述队列数量、处理中状态等信息。 |
 
@@ -94,7 +120,7 @@
 
 | `QueueCategory` | 离线请求分类枚举，例如用户操作、同步、统计、日志等。 |
 
-| `IdempotencyKeyGenerator` | 幂等 Key 生成器，用于生成唯一请求标识，避免重复提交。 |
+| `IdempotencyKeyGenerator` | 幂等 Key 生成器，依赖直接声明的 `uuid` 包。 |
 
 ---
 
@@ -117,6 +143,31 @@
 | `offlineQueueStateProvider` | Riverpod StreamProvider，用于监听离线队列状态。 |
 
 | `offlineQueueStorageProvider` | Riverpod Provider，用于提供离线队列存储服务。 |
+
+---
+
+## request 约定
+
+`request()` 位于 `lib/core/network/model/http_request.dart`。
+
+- `authorization` 默认 `false`。需要登录态时显式传 `true`；本地没有 token 会抛出 `StateError`，不会静默返回 `null`。
+- `isLoading` 默认 `true`，请求前显示 `LoadingOverlay`，结束时关闭。
+- `isOffline` 默认 `true`。网络明确离线时，这次请求进入离线队列并返回 `null`。不需要入队时传 `isOffline: false`。
+- HTTP 401 和响应体 `code == 401` 都会提示登录过期。
+- 已经是 `http://` 或 `https://` 的地址不会再拼接 `EnvConfig.apiBaseUrl`。相对路径才会和 base URL 拼接。
+- 直接使用 `Dio` 时，`BaseOptions.baseUrl` 同样来自 `EnvConfig.apiBaseUrl`。绝对地址不会被拼两次。
+
+拦截器顺序：
+
+```text
+GlobalizationInterceptor
+        ↓
+OfflineQueueInterceptor
+        ↓
+LoggerInterceptor
+```
+
+语言切换不重建 Dio。`dioInterceptorsProvider` 重新执行前会先移除这三类拦截器，避免重复注册。
 
 ---
 
@@ -324,7 +375,7 @@ paymentStatusPending
 
 | `InputValidator` | 输入校验工具类，用于校验手机号、邮箱、密码、非空等规则。 |
 
-| `ScreenResponsive` | 响应式尺寸适配工具，根据设计稿宽度自动计算缩放比例，统一适配不同屏幕尺寸。 |
+| `ScreenResponsive` | 页面内尺寸适配工具，按设计稿宽度计算 `.adapt`。应用根节点实际使用的是 `ScreenUtilInit`。 |
 
 ---
 
@@ -349,21 +400,12 @@ Permission 模块统一管理应用中的权限申请、权限检测、平台适
 目录结构：
 
 ```text
-
-core/
-
-└── permission/
-
-├── enum\_permission.dart
-
-├── permission\_request.dart
-
-├── permission\_resolver.dart
-
-├── permission\_handler.dart
-
-└── permission\_request\_record.dart
-
+core/permission/
+├── permission_type.dart
+├── permission_request.dart
+├── permission_resolver.dart
+├── permission_handler.dart
+└── permission_request_record.dart
 ```
 
 ---
@@ -376,7 +418,7 @@ core/
 
 | `PermissionRequest` | 权限枚举，业务层统一使用的权限类型。 |
 
-| `PermissionType` | 权限分类枚举，用于描述支持的权限类型。 |
+| `PermissionType` | 权限分类枚举，定义在 `permission_type.dart`。业务申请仍使用 `PermissionRequest`。 |
 
 | `PermissionResolver` | 权限解析器，根据平台和系统版本解析真实权限。 |
 
@@ -481,6 +523,8 @@ Storage
 ```
 
 业务层永远不知道这些差异。
+
+`PermissionRequest.audio` 对应 `Permission.audio`。相册、Wi-Fi、蓝牙仍由 `PermissionResolver` 按平台和系统版本解析，不能写成固定权限。
 
 ---
 
@@ -640,7 +684,7 @@ await PermissionRequestRecord.instance.hasRequested(
 | --------------------------- | ------------------------------------------------------------------------------------------------------ |
 | `AppCachedImage`            | 网络缓存图片组件，封装图片加载、缓存、占位图、错误图。                                                 |
 | `AdvancedImageCacheManager` | 图片缓存管理器，负责管理网络图片缓存策略。                                                             |
-| `AppImage`                  | 应用统一图片组件，支持资源图片、网络图片、Base64、文件图片，并支持 `matchTextDirection` RTL 自动镜像。 |
+| `AppImage`                  | 应用统一图片组件，支持资源图片、网络图片、Base64 和本地文件路径 `filePath`，并支持 `matchTextDirection` RTL 自动镜像。Web 上本地文件显示错误占位。 |
 | `AppGlobalizedImage`        | 全球化图片组件，根据当前 Locale / Directionality 自动选择固定图、镜像图、LTR/RTL 图或语言独立图。      |
 | `AppAsset`                  | 全球化图片资源定义模型，用于声明图片采用 fixed、mirrorOnRtl、directional 或 localized 策略。           |
 | `AppAssetStrategy`          | 图片全球化策略枚举，区分固定资源、RTL 自动镜像、LTR/RTL 独立资源和 Locale 独立资源。                   |
@@ -964,7 +1008,9 @@ GlobalizationProvider
 
 # ScreenResponsive Usage
 
-`ScreenResponsive` 用于统一管理项目中的尺寸适配，根据设计稿宽度自动计算缩放比例。
+运行中的 `Application` 使用 `flutter_screenutil` 的 `ScreenUtilInit`，设计尺寸见「启动顺序」。`ScreenResponsive` 是另一套页面内适配工具，需要时在页面 `build` 里单独初始化。
+
+`ScreenResponsive` 根据设计稿宽度自动计算缩放比例。
 
 ## 初始化
 
@@ -1228,15 +1274,7 @@ l10n_source/
 文件位置：
 
 ```text
-
-lib/
-
-└── core/
-
-└── config/
-
-    └── app\_env.dart
-
+lib/core/config/config_env.dart
 ```
 
 主要用于管理：
@@ -1807,9 +1845,13 @@ Framework 负责
 core/
 ├── config/
 ├── device/
+├── globalization/
 ├── logger/
 ├── network/
 ├── permission/
+├── platform/
+├── screen/
+├── state/
 ├── storage/
 └── utils/
 

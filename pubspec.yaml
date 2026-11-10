@@ -49,6 +49,8 @@ dependencies:
   shared_preferences: ^2.5.3
   #网络请求
   dio: ^5.9.0
+  # 幂等请求标识。业务代码直接 import，不能只依赖传递依赖。
+  uuid: ^4.5.3
   #toast工具
   fluttertoast: ^9.0.0
   #进度加载

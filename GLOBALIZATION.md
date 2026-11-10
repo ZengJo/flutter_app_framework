@@ -239,7 +239,11 @@ timezone: Asia/Riyadh
 measurementSystem: metric
 ```
 
-`RequestHeaders` 只缓存设备型号、系统版本、App 版本等静态 Header，因此切换语言后下一条请求会立即使用新语言。
+`RequestHeaders` 只缓存平台、设备型号、系统版本、App 版本等静态 Header。Token 由 `request()` 按需写入。语言、地区、货币、时区由 `GlobalizationInterceptor` 在每次请求前读取当前 `GlobalizationState`，因此切换语言后不需要重建 Dio。
+
+`Dio` 的 `baseUrl` 来自 `EnvConfig.apiBaseUrl`。`request()` 对相对路径做拼接；已经是绝对地址时不再拼接。
+
+`NetworkStatusBanner` 放在 `MaterialApp` 内部，断网文案可以随当前语言刷新。
 
 ## 16. RTL 页面规范
 
@@ -938,7 +942,9 @@ GlobalizationResolver
         ↓
 MaterialApp(locale: state.locale)
         ↓
-用户进入 LanguageSettingsPage
+默认首页是 bootstrap 传入的 OrderPage
+        ↓
+用户通过 RouteNames.languageSettings 进入 LanguageSettingsPage
         ↓
 languageSettingsProvider
         ↓

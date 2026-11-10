@@ -36,6 +36,7 @@ class ApplicationBootstrapper {
 
     await _initBase();
     _container = _initDependencies();
+    await _waitForDependencies();
     _run(const OrderPage());
   }
 
@@ -72,6 +73,10 @@ class ApplicationBootstrapper {
     container.read(offlineQueueManagerProvider);
 
     return container;
+  }
+
+  Future<void> _waitForDependencies() {
+    return _container.read(offlineQueueManagerProvider).ready;
   }
 
   void _run(Widget startPage) {

@@ -1,8 +1,8 @@
-import 'dart:io';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_udid/flutter_udid.dart';
+
+import '../platform/app_platform.dart';
 
 class DeviceInfoService {
   ///设备屏幕宽度
@@ -61,10 +61,10 @@ class DeviceInfoService {
   ///判断是否为真机
   static Future<bool> isRealDevice() async {
     final deviceInfo = DeviceInfoPlugin();
-    if (Platform.isAndroid) {
+    if (AppPlatform.isAndroid) {
       final info = await deviceInfo.androidInfo;
       return info.isPhysicalDevice;
-    } else if (Platform.isIOS) {
+    } else if (AppPlatform.isIOS) {
       final info = await deviceInfo.iosInfo;
       return info.isPhysicalDevice;
     } else {
@@ -80,7 +80,7 @@ class DeviceInfoService {
     String deviceType = "";
 
     final deviceInfo = DeviceInfoPlugin();
-    String platform = Platform.operatingSystem;
+    String platform = AppPlatform.operatingSystem;
     if (platform == "android") {
       final android = await deviceInfo.androidInfo;
       deviceModel = android.model;

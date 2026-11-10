@@ -8,10 +8,10 @@ import 'app/bootstrap/application_bootstrapper.dart';
 import 'app/config/app_globals.dart';
 import 'app/navigation/app_navigator.dart';
 import 'app/navigation/app_router.dart';
-import 'app/navigation/route_names.dart';
 import 'app/theme/app_theme.dart';
 import 'core/globalization/generated/app_localizations.dart';
 import 'core/globalization/providers/globalization_providers.dart';
+import 'shared/widgets/feedback/network_status_banner.dart';
 
 Future<void> main() async {
   await ApplicationBootstrapper.instance.bootstrap();
@@ -62,14 +62,20 @@ class _ApplicationState extends ConsumerState<Application>
     }
   }
 
+  /// MaterialApp 还没挂上时没有 MediaQuery，用 View 计算逻辑尺寸。
+  Size _designSize(BuildContext context) {
+    final view = View.of(context);
+    final ratio = view.devicePixelRatio == 0 ? 1.0 : view.devicePixelRatio;
+    final shortestSide = view.physicalSize.shortestSide / ratio;
+    return shortestSide > 600 ? const Size(1112, 710) : const Size(375, 812);
+  }
+
   @override
   Widget build(BuildContext context) {
     final globalization = ref.watch(globalizationProvider);
 
     return ScreenUtilInit(
-      designSize: MediaQuery.sizeOf(context).shortestSide > 600
-          ? const Size(1112, 710)
-          : const Size(375, 812),
+      designSize: _designSize(context),
       minTextAdapt: true,
       splitScreenMode: true,
       rebuildFactor: RebuildFactors.size,
@@ -85,11 +91,10 @@ class _ApplicationState extends ConsumerState<Application>
           /// App 名称也从 ARB 获取，不再写死单一语言。
           onGenerateTitle: (context) => AppLocalizations.of(context).appName,
 
-          /// 这里是路由跳转页面配置，如果不需要路由跳转，则不需要配置。
-          initialRoute: RouteNames.languageSettings,
+          /// 命名路由只负责后续跳转。首页由 bootstrap 传入的 startPage 决定。
           onGenerateRoute: AppRouter.onGenerateRoute,
           navigatorKey: globalKeyNavigatorKey,
-          navigatorObservers: [RouteObserverService()],
+          navigatorObservers: [RouteObserverService.instance],
           theme: AppTheme.light(),
           darkTheme: AppTheme.dark(),
           debugShowCheckedModeBanner: false,
@@ -99,7 +104,17 @@ class _ApplicationState extends ConsumerState<Application>
                 data: MediaQuery.of(
                   context,
                 ).copyWith(textScaler: const TextScaler.linear(1)),
-                child: child ?? const SizedBox.shrink(),
+                child: Stack(
+                  children: [
+                    child ?? const SizedBox.shrink(),
+                    const Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: NetworkStatusBanner(),
+                    ),
+                  ],
+                ),
               );
             },
           ),

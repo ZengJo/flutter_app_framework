@@ -1,10 +1,8 @@
-import 'dart:io';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../globalization/generated/app_localizations.dart';
-
+import '../platform/app_platform.dart';
 import 'permission_request.dart';
 
 class PermissionResolver {
@@ -13,14 +11,14 @@ class PermissionResolver {
   static final PermissionResolver instance = PermissionResolver._internal();
 
   Future<int> androidSdkInt() async {
-    if (!Platform.isAndroid) return 0;
+    if (!AppPlatform.isAndroid) return 0;
 
     final androidInfo = await DeviceInfoPlugin().androidInfo;
     return androidInfo.version.sdkInt;
   }
 
   Future<bool> isAndroid13OrAbove() async {
-    if (!Platform.isAndroid) return false;
+    if (!AppPlatform.isAndroid) return false;
     return (await androidSdkInt()) >= 33;
   }
 
@@ -49,7 +47,7 @@ class PermissionResolver {
         return Permission.location;
 
       case PermissionRequest.bluetooth:
-        if (Platform.isAndroid) {
+        if (AppPlatform.isAndroid) {
           final sdkInt = await androidSdkInt();
           return sdkInt >= 31
               ? Permission.bluetoothConnect
@@ -68,9 +66,9 @@ class PermissionResolver {
   }
 
   Future<Permission> _resolvePhotosPermission() async {
-    if (Platform.isIOS) return Permission.photos;
+    if (AppPlatform.isIOS) return Permission.photos;
 
-    if (Platform.isAndroid) {
+    if (AppPlatform.isAndroid) {
       final sdkInt = await androidSdkInt();
       return sdkInt >= 33 ? Permission.photos : Permission.storage;
     }
@@ -79,7 +77,7 @@ class PermissionResolver {
   }
 
   Future<List<Permission>> _resolveWifiPermissions() async {
-    if (!Platform.isAndroid && !Platform.isIOS) {
+    if (!AppPlatform.isAndroid && !AppPlatform.isIOS) {
       return const [];
     }
 
@@ -87,7 +85,7 @@ class PermissionResolver {
   }
 
   Future<List<Permission>> _resolveBluetoothPermissions() async {
-    if (Platform.isAndroid) {
+    if (AppPlatform.isAndroid) {
       final sdkInt = await androidSdkInt();
 
       if (sdkInt >= 31) {
@@ -97,7 +95,7 @@ class PermissionResolver {
       return [Permission.bluetooth];
     }
 
-    if (Platform.isIOS) {
+    if (AppPlatform.isIOS) {
       return [Permission.bluetooth];
     }
 
@@ -140,7 +138,7 @@ class PermissionResolver {
     }
 
     if (permission == Permission.storage) {
-      if (Platform.isAndroid && (await androidSdkInt()) < 33) {
+      if (AppPlatform.isAndroid && (await androidSdkInt()) < 33) {
         return l10n.permissionPhotos;
       }
       return l10n.permissionStorage;

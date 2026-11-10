@@ -1,16 +1,16 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
 import 'app_cached_image.dart';
+import 'local_file_image.dart' if (dart.library.io) 'local_file_image_io.dart';
 
 /// 项目统一图片组件。
 /// - Asset
 /// - Network
 /// - Base64
-/// - File
+/// - 本地文件路径
 /// - 圆角
 /// - Placeholder
 /// - RTL 自动镜像 Asset
@@ -29,7 +29,7 @@ class AppImage extends StatefulWidget {
     this.aspectRatio,
     this.enableCache = true,
     this.errorWidget,
-    this.file,
+    this.filePath,
     this.matchTextDirection = false,
   });
 
@@ -57,7 +57,8 @@ class AppImage extends StatefulWidget {
 
   final bool enableCache;
 
-  final File? file;
+  /// 本地文件路径。Web 上没有本地文件图片，会显示错误占位。
+  final String? filePath;
 
   final bool matchTextDirection;
 
@@ -97,7 +98,7 @@ class _AppImageState extends State<AppImage> {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.src != widget.src ||
-        oldWidget.file != widget.file ||
+        oldWidget.filePath != widget.filePath ||
         oldWidget.radius != widget.radius ||
         oldWidget.borderRadius != widget.borderRadius) {
       _resolveAll();
@@ -119,7 +120,7 @@ class _AppImageState extends State<AppImage> {
 
   /// 判断图片来源。
   _ImageType _resolveImageType() {
-    if (widget.file != null) {
+    if (widget.filePath != null && widget.filePath!.isNotEmpty) {
       return _ImageType.file;
     }
 
@@ -168,7 +169,7 @@ class _AppImageState extends State<AppImage> {
 
     switch (_imageType) {
       case _ImageType.file:
-        image = _buildFileImage(widget.file!);
+        image = _buildFileImage(widget.filePath!);
         break;
 
       case _ImageType.network:
@@ -235,16 +236,13 @@ class _AppImageState extends State<AppImage> {
   }
 
   /// 本地文件。
-  Widget _buildFileImage(File file) {
-    return Image.file(
-      file,
+  Widget _buildFileImage(String path) {
+    return buildLocalFileImage(
+      path: path,
       width: widget.width,
       height: widget.height,
       fit: widget.fit ?? _defaultFit,
-      gaplessPlayback: true,
-      errorBuilder: (context, error, stackTrace) {
-        return _buildErrorWidget();
-      },
+      errorWidget: _buildErrorWidget(),
     );
   }
 

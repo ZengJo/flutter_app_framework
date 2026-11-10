@@ -13,69 +13,58 @@ class OfflineQueueInterceptor extends Interceptor {
   /// 离线队列管理器
   final OfflineQueueManager manager;
 
-  OfflineQueueInterceptor(this.monitor, this.manager, this.isNeedQueueRequest);
-
-  ///是否需要队列请求
-  bool isNeedQueueRequest = false;
+  OfflineQueueInterceptor(this.monitor, this.manager);
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     final state = monitor.current;
 
-    // 0) 非离线请求（明确不需要队列）
-    if (options.extra['offline'] != true) {
+    // 未标记离线队列，或正在重放的请求，直接放行。
+    if (options.extra['offline'] != true || options.extra['replay'] == true) {
       handler.next(options);
       return;
     }
 
-    // replay 请求必须永远放行（避免重放时再次入队/死循环）
-    if (options.extra['replay'] == true) {
+    // unknown：一律放行（冷启动必须）
+    if (state.isUnknown || !state.isOffline) {
       handler.next(options);
       return;
     }
 
-    // 1) unknown：一律放行（冷启动必须）
-    if (state.isUnknown) {
-      handler.next(options);
-      return;
-    }
+    final extra = options.extra;
+    final idempotencyKey = extra['idempotencyKey'];
+    final req = OfflineRequest(
+      id: const Uuid().v4(),
+      idempotencyKey: idempotencyKey is String ? idempotencyKey : '',
+      priority: QueuePriority.values[_enumIndex(
+        extra['priority'],
+        QueuePriority.normal.index,
+        QueuePriority.values.length,
+      )],
+      category: QueueCategory.values[_enumIndex(
+        extra['category'],
+        QueueCategory.userAction.index,
+        QueueCategory.values.length,
+      )],
+      method: options.method,
+      path: options.path,
+      query: options.queryParameters,
+      body: options.data,
+      headers: Map<String, dynamic>.from(options.headers),
+    );
 
-    // 2) 明确离线：入队并 cancel
-    if (state.isOffline && isNeedQueueRequest) {
-      /// 获取额外信息
-      final extra = options.extra;
-
-      /// 创建离线请求
-      final req = OfflineRequest(
-        id: const Uuid().v4(),
-        idempotencyKey: extra['idempotencyKey'],
-        priority: QueuePriority
-            .values[(extra['priority'] as int?) ?? QueuePriority.normal.index],
-        category:
-            QueueCategory.values[(extra['category'] as int?) ??
-                QueueCategory.userAction.index],
-        method: options.method,
-        path: options.path,
-        query: options.queryParameters,
-        body: options.data,
-        headers: Map<String, dynamic>.from(options.headers),
-      );
-
-      /// 入队
-      manager.enqueue(req);
-
-      /// 拒绝请求
-      handler.reject(
-        DioException(
-          requestOptions: options,
-          type: DioExceptionType.cancel,
-          message: 'OFFLINE_QUEUED',
-        ),
-      );
-      return;
-    }
-
-    // 3) 在线：正常请求
-    handler.next(options);
+    manager.enqueue(req);
+    handler.reject(
+      DioException(
+        requestOptions: options,
+        type: DioExceptionType.cancel,
+        message: 'OFFLINE_QUEUED',
+      ),
+    );
   }
+}
+
+int _enumIndex(Object? value, int fallback, int length) {
+  if (value is int && value >= 0 && value < length) return value;
+  return fallback;
 }

@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import '../../../app/config/app_globals.dart';
 import '../../device/device_info_service.dart';
+import '../../platform/app_platform.dart';
 
 /// 公共“静态”请求头。
 ///
@@ -22,18 +21,22 @@ class RequestHeaders {
 
   static Future<Map<String, dynamic>> _buildStaticHeaders() async {
     final deviceInfo = await DeviceInfoService.getDeviceInfo();
-    final platform = Platform.operatingSystem;
+    final platform = AppPlatform.operatingSystem;
 
     return <String, dynamic>{
       'platform': platform,
       'appVersion': globalPackageInfo.version,
-      'osVersion': Platform.operatingSystemVersion,
+      'osVersion': AppPlatform.operatingSystemVersion,
       'deviceId': globalDeviceId,
       'deviceBrand': deviceInfo['deviceBrand']?.toString() ?? '',
-      'system': Platform.operatingSystemVersion,
+      'system': AppPlatform.operatingSystemVersion,
       'deviceModel': deviceInfo['deviceModel']?.toString() ?? '',
       'deviceType': deviceInfo['deviceType']?.toString() ?? '',
-      'channel': platform == 'ios' ? 'ios' : 'android',
+      'channel': switch (platform) {
+        'ios' => 'ios',
+        'android' => 'android',
+        _ => platform,
+      },
     };
   }
 

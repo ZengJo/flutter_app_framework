@@ -14,6 +14,13 @@ final dioInterceptorsProvider = Provider<void>((ref) {
   final queueManager = ref.watch(offlineQueueManagerProvider);
   final monitor = ref.watch(networkMonitorProvider);
 
+  dio.interceptors.removeWhere(
+    (interceptor) =>
+        interceptor is GlobalizationInterceptor ||
+        interceptor is OfflineQueueInterceptor ||
+        interceptor is LoggerInterceptor,
+  );
+
   /// 1. 每次请求实时写入语言、地区、货币、时区、单位制。
   /// 使用 ref.read 而不是 ref.watch，切换语言时不需要重新创建 Dio。
   dio.interceptors.add(
@@ -23,7 +30,8 @@ final dioInterceptorsProvider = Provider<void>((ref) {
   );
 
   /// 2. 离线队列在 Globalization 之后执行，确保入队时已有当前 Header。
-  dio.interceptors.add(OfflineQueueInterceptor(monitor, queueManager, false));
+  /// 是否入队由单次请求的 extra['offline'] 决定。
+  dio.interceptors.add(OfflineQueueInterceptor(monitor, queueManager));
 
   /// 3. 最后记录请求日志，此时可以看到最终 Header。
   dio.interceptors.add(LoggerInterceptor());
