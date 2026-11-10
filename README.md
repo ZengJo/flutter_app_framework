@@ -70,6 +70,33 @@ runAppHandle(OrderPage)
 
 手机设计尺寸是 `375×812`。`View` 的最短边大于 600 时使用 `1112×710`。
 
+## 新项目包名
+
+新项目只改根目录的 `app_identity.yaml`，然后执行：
+
+```bash
+dart run tool/apply_identity.dart
+```
+
+先看会改哪些文件：
+
+```bash
+dart run tool/apply_identity.dart --check
+```
+
+这个文件里有两个值，它们不是同一个字符串：
+
+| 字段 | 作用 |
+| --- | --- |
+| `dart_package` | `pubspec.yaml` 的 `name`、代码里的 `package:` 引用。和旧包名相同的 iOS `CFBundleName` 会一起改。 |
+| `application_id` | Android `applicationId`、`namespace`、Kotlin `package` 和目录，以及 iOS Bundle Identifier。测试 Target 会改成 `application_id.RunnerTests`。 |
+
+改完 `dart_package` 后执行 `flutter pub get`。
+
+脚本不会改应用显示名，也不会改 README 里作为上游仓库名出现的 `flutter_app_framework`。
+
+当前 Android 是 `com.bourne.flutterframework`，iOS 仍是生成时留下的 `com.example.flutterYmdqQszcccj`。执行同步脚本后，iOS 会改成 `app_identity.yaml` 里的 `application_id`。
+
 ## Core / Device Classes
 
 | Class | 作用 |
