@@ -5,24 +5,6 @@
   "commonSystemDefault": "System default",
   "commonUnknownError": "Unknown error",
   "commonRequestTimeout": "Request timed out",
-  "networkUnavailable": "Network unavailable. Actions will sync when the connection returns.",
-  "networkOfflinePending": "Offline. {count} queued actions.",
-  "@networkOfflinePending": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "networkRecoveredReplaying": "Connection restored. Syncing {count} queued actions…",
-  "@networkRecoveredReplaying": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "networkSyncComplete": "Sync complete",
   "errorLoginExpired": "Your session has expired. Please sign in again.",
   "errorParameterMismatch": "Invalid request parameters",
   "errorOperationFailed": "Operation failed",
@@ -40,25 +22,6 @@
   "errorLoginFailed": "Sign-in failed",
   "errorUserNotFound": "User not found",
   "errorIncorrectPassword": "Incorrect password",
-  "permissionMicrophone": "Microphone",
-  "permissionCamera": "Camera",
-  "permissionPhotos": "Photos",
-  "permissionNotification": "Notifications",
-  "permissionPhone": "Phone",
-  "permissionAudio": "Audio",
-  "permissionStorage": "Storage",
-  "permissionWifi": "Wi-Fi",
-  "permissionBluetooth": "Bluetooth",
-  "permissionLocation": "Location",
-  "permissionGeneric": "Permission",
-  "permissionOpenSettings": "{permission} permission is disabled. Please enable it in Settings.",
-  "@permissionOpenSettings": {
-    "placeholders": {
-      "permission": {
-        "type": "String"
-      }
-    }
-  },
   "globalizationLanguage": "Language",
   "globalizationRegion": "Region",
   "globalizationCurrency": "Currency",
@@ -92,6 +55,24 @@
     }
   },
   "languageChangeImmediatelyHint": "Language changes apply immediately. You do not need to restart the app.",
+  "networkUnavailable": "Network unavailable. Actions will sync when the connection returns.",
+  "networkOfflinePending": "Offline. {count} queued actions.",
+  "@networkOfflinePending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "networkRecoveredReplaying": "Connection restored. Syncing {count} queued actions…",
+  "@networkRecoveredReplaying": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "networkSyncComplete": "Sync complete",
   "orderFlowTitle": "Order Flow",
   "orderStatusLabel": "Status",
   "orderCreate": "Create order",
@@ -105,5 +86,24 @@
   "orderStatusFailure": "Failed",
   "orderMessageCreatedPendingPayment": "Order created. Waiting for payment.",
   "orderMessagePaymentSucceeded": "Payment successful.",
-  "orderMessageCompleted": "Order completed."
+  "orderMessageCompleted": "Order completed.",
+  "permissionMicrophone": "Microphone",
+  "permissionCamera": "Camera",
+  "permissionPhotos": "Photos",
+  "permissionNotification": "Notifications",
+  "permissionPhone": "Phone",
+  "permissionAudio": "Audio",
+  "permissionStorage": "Storage",
+  "permissionWifi": "Wi-Fi",
+  "permissionBluetooth": "Bluetooth",
+  "permissionLocation": "Location",
+  "permissionGeneric": "Permission",
+  "permissionOpenSettings": "{permission} permission is disabled. Please enable it in Settings.",
+  "@permissionOpenSettings": {
+    "placeholders": {
+      "permission": {
+        "type": "String"
+      }
+    }
+  }
 }

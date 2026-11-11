@@ -27,17 +27,6 @@ Future<void> main() async {
     'ar',
   ];
 
-  /// 固定模块顺序，确保生成后的 ARB 也便于人工查看。
-  const moduleOrder = <String>[
-    'common',
-    'network',
-    'error',
-    'permission',
-    'globalization',
-    'language',
-    'order',
-  ];
-
   final sourceDir = Directory(sourceDirectory);
 
   if (!sourceDir.existsSync()) {
@@ -51,6 +40,17 @@ Future<void> main() async {
   if (!outputDir.existsSync()) {
     outputDir.createSync(recursive: true);
   }
+
+  /// 按实际模块目录生成顺序，目录名排序保证多次生成结果稳定。
+  final moduleOrder = _discoverModules(sourceDir);
+
+  if (moduleOrder.isEmpty) {
+    stderr.writeln('❌ $sourceDirectory 下没有可合并的翻译模块');
+    exitCode = 1;
+    return;
+  }
+
+  stdout.writeln('📦 模块顺序：${moduleOrder.join(' → ')}');
 
   for (final locale in locales) {
     final success = await _mergeLocale(
@@ -68,6 +68,26 @@ Future<void> main() async {
 
   stdout.writeln('');
   stdout.writeln('✅ 多语言资源合并完成');
+}
+
+/// 读取 [sourceDir] 下的模块目录。
+///
+/// 每个子目录视为一个翻译模块，名称即目录名。
+/// 隐藏目录会被忽略，结果按目录名排序。
+List<String> _discoverModules(Directory sourceDir) {
+  final modules = sourceDir
+      .listSync()
+      .whereType<Directory>()
+      .map((directory) {
+        return directory.uri.pathSegments
+            .where((segment) => segment.isNotEmpty)
+            .last;
+      })
+      .where((module) => !module.startsWith('.'))
+      .toList();
+
+  modules.sort();
+  return modules;
 }
 
 Future<bool> _mergeLocale({
