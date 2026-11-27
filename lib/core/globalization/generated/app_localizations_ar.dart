@@ -24,23 +24,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commonRequestTimeout => 'انتهت مهلة الطلب';
 
   @override
-  String get networkUnavailable =>
-      'الشبكة غير متاحة. ستتم مزامنة العمليات عند عودة الاتصال.';
-
-  @override
-  String networkOfflinePending(int count) {
-    return 'أنت غير متصل. هناك $count عمليات في قائمة الانتظار.';
-  }
-
-  @override
-  String networkRecoveredReplaying(int count) {
-    return 'عاد الاتصال. جارٍ مزامنة $count عمليات…';
-  }
-
-  @override
-  String get networkSyncComplete => 'اكتملت المزامنة';
-
-  @override
   String get errorLoginExpired =>
       'انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى.';
 
@@ -94,44 +77,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorIncorrectPassword => 'كلمة المرور غير صحيحة';
-
-  @override
-  String get permissionMicrophone => 'الميكروفون';
-
-  @override
-  String get permissionCamera => 'الكاميرا';
-
-  @override
-  String get permissionPhotos => 'الصور';
-
-  @override
-  String get permissionNotification => 'الإشعارات';
-
-  @override
-  String get permissionPhone => 'الهاتف';
-
-  @override
-  String get permissionAudio => 'الصوت';
-
-  @override
-  String get permissionStorage => 'التخزين';
-
-  @override
-  String get permissionWifi => 'Wi-Fi';
-
-  @override
-  String get permissionBluetooth => 'البلوتوث';
-
-  @override
-  String get permissionLocation => 'الموقع';
-
-  @override
-  String get permissionGeneric => 'الإذن';
-
-  @override
-  String permissionOpenSettings(String permission) {
-    return 'إذن $permission معطل. يرجى تفعيله من الإعدادات.';
-  }
 
   @override
   String get globalizationLanguage => 'اللغة';
@@ -217,6 +162,23 @@ class AppLocalizationsAr extends AppLocalizations {
       'يتم تطبيق تغيير اللغة فورًا ولا حاجة إلى إعادة تشغيل التطبيق.';
 
   @override
+  String get networkUnavailable =>
+      'الشبكة غير متاحة. ستتم مزامنة العمليات عند عودة الاتصال.';
+
+  @override
+  String networkOfflinePending(int count) {
+    return 'أنت غير متصل. هناك $count عمليات في قائمة الانتظار.';
+  }
+
+  @override
+  String networkRecoveredReplaying(int count) {
+    return 'عاد الاتصال. جارٍ مزامنة $count عمليات…';
+  }
+
+  @override
+  String get networkSyncComplete => 'اكتملت المزامنة';
+
+  @override
   String get orderFlowTitle => 'مسار الطلب';
 
   @override
@@ -258,4 +220,42 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get orderMessageCompleted => 'اكتمل الطلب.';
+
+  @override
+  String get permissionMicrophone => 'الميكروفون';
+
+  @override
+  String get permissionCamera => 'الكاميرا';
+
+  @override
+  String get permissionPhotos => 'الصور';
+
+  @override
+  String get permissionNotification => 'الإشعارات';
+
+  @override
+  String get permissionPhone => 'الهاتف';
+
+  @override
+  String get permissionAudio => 'الصوت';
+
+  @override
+  String get permissionStorage => 'التخزين';
+
+  @override
+  String get permissionWifi => 'Wi-Fi';
+
+  @override
+  String get permissionBluetooth => 'البلوتوث';
+
+  @override
+  String get permissionLocation => 'الموقع';
+
+  @override
+  String get permissionGeneric => 'الإذن';
+
+  @override
+  String permissionOpenSettings(String permission) {
+    return 'إذن $permission معطل. يرجى تفعيله من الإعدادات.';
+  }
 }

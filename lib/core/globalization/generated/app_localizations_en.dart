@@ -24,23 +24,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonRequestTimeout => 'Request timed out';
 
   @override
-  String get networkUnavailable =>
-      'Network unavailable. Actions will sync when the connection returns.';
-
-  @override
-  String networkOfflinePending(int count) {
-    return 'Offline. $count queued actions.';
-  }
-
-  @override
-  String networkRecoveredReplaying(int count) {
-    return 'Connection restored. Syncing $count queued actions…';
-  }
-
-  @override
-  String get networkSyncComplete => 'Sync complete';
-
-  @override
   String get errorLoginExpired =>
       'Your session has expired. Please sign in again.';
 
@@ -95,44 +78,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorIncorrectPassword => 'Incorrect password';
-
-  @override
-  String get permissionMicrophone => 'Microphone';
-
-  @override
-  String get permissionCamera => 'Camera';
-
-  @override
-  String get permissionPhotos => 'Photos';
-
-  @override
-  String get permissionNotification => 'Notifications';
-
-  @override
-  String get permissionPhone => 'Phone';
-
-  @override
-  String get permissionAudio => 'Audio';
-
-  @override
-  String get permissionStorage => 'Storage';
-
-  @override
-  String get permissionWifi => 'Wi-Fi';
-
-  @override
-  String get permissionBluetooth => 'Bluetooth';
-
-  @override
-  String get permissionLocation => 'Location';
-
-  @override
-  String get permissionGeneric => 'Permission';
-
-  @override
-  String permissionOpenSettings(String permission) {
-    return '$permission permission is disabled. Please enable it in Settings.';
-  }
 
   @override
   String get globalizationLanguage => 'Language';
@@ -219,6 +164,23 @@ class AppLocalizationsEn extends AppLocalizations {
       'Language changes apply immediately. You do not need to restart the app.';
 
   @override
+  String get networkUnavailable =>
+      'Network unavailable. Actions will sync when the connection returns.';
+
+  @override
+  String networkOfflinePending(int count) {
+    return 'Offline. $count queued actions.';
+  }
+
+  @override
+  String networkRecoveredReplaying(int count) {
+    return 'Connection restored. Syncing $count queued actions…';
+  }
+
+  @override
+  String get networkSyncComplete => 'Sync complete';
+
+  @override
   String get orderFlowTitle => 'Order Flow';
 
   @override
@@ -260,4 +222,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get orderMessageCompleted => 'Order completed.';
+
+  @override
+  String get permissionMicrophone => 'Microphone';
+
+  @override
+  String get permissionCamera => 'Camera';
+
+  @override
+  String get permissionPhotos => 'Photos';
+
+  @override
+  String get permissionNotification => 'Notifications';
+
+  @override
+  String get permissionPhone => 'Phone';
+
+  @override
+  String get permissionAudio => 'Audio';
+
+  @override
+  String get permissionStorage => 'Storage';
+
+  @override
+  String get permissionWifi => 'Wi-Fi';
+
+  @override
+  String get permissionBluetooth => 'Bluetooth';
+
+  @override
+  String get permissionLocation => 'Location';
+
+  @override
+  String get permissionGeneric => 'Permission';
+
+  @override
+  String permissionOpenSettings(String permission) {
+    return '$permission permission is disabled. Please enable it in Settings.';
+  }
 }

@@ -130,30 +130,6 @@ abstract class AppLocalizations {
   /// **'Request timed out'**
   String get commonRequestTimeout;
 
-  /// No description provided for @networkUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Network unavailable. Actions will sync when the connection returns.'**
-  String get networkUnavailable;
-
-  /// No description provided for @networkOfflinePending.
-  ///
-  /// In en, this message translates to:
-  /// **'Offline. {count} queued actions.'**
-  String networkOfflinePending(int count);
-
-  /// No description provided for @networkRecoveredReplaying.
-  ///
-  /// In en, this message translates to:
-  /// **'Connection restored. Syncing {count} queued actions…'**
-  String networkRecoveredReplaying(int count);
-
-  /// No description provided for @networkSyncComplete.
-  ///
-  /// In en, this message translates to:
-  /// **'Sync complete'**
-  String get networkSyncComplete;
-
   /// No description provided for @errorLoginExpired.
   ///
   /// In en, this message translates to:
@@ -255,78 +231,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Incorrect password'**
   String get errorIncorrectPassword;
-
-  /// No description provided for @permissionMicrophone.
-  ///
-  /// In en, this message translates to:
-  /// **'Microphone'**
-  String get permissionMicrophone;
-
-  /// No description provided for @permissionCamera.
-  ///
-  /// In en, this message translates to:
-  /// **'Camera'**
-  String get permissionCamera;
-
-  /// No description provided for @permissionPhotos.
-  ///
-  /// In en, this message translates to:
-  /// **'Photos'**
-  String get permissionPhotos;
-
-  /// No description provided for @permissionNotification.
-  ///
-  /// In en, this message translates to:
-  /// **'Notifications'**
-  String get permissionNotification;
-
-  /// No description provided for @permissionPhone.
-  ///
-  /// In en, this message translates to:
-  /// **'Phone'**
-  String get permissionPhone;
-
-  /// No description provided for @permissionAudio.
-  ///
-  /// In en, this message translates to:
-  /// **'Audio'**
-  String get permissionAudio;
-
-  /// No description provided for @permissionStorage.
-  ///
-  /// In en, this message translates to:
-  /// **'Storage'**
-  String get permissionStorage;
-
-  /// No description provided for @permissionWifi.
-  ///
-  /// In en, this message translates to:
-  /// **'Wi-Fi'**
-  String get permissionWifi;
-
-  /// No description provided for @permissionBluetooth.
-  ///
-  /// In en, this message translates to:
-  /// **'Bluetooth'**
-  String get permissionBluetooth;
-
-  /// No description provided for @permissionLocation.
-  ///
-  /// In en, this message translates to:
-  /// **'Location'**
-  String get permissionLocation;
-
-  /// No description provided for @permissionGeneric.
-  ///
-  /// In en, this message translates to:
-  /// **'Permission'**
-  String get permissionGeneric;
-
-  /// No description provided for @permissionOpenSettings.
-  ///
-  /// In en, this message translates to:
-  /// **'{permission} permission is disabled. Please enable it in Settings.'**
-  String permissionOpenSettings(String permission);
 
   /// No description provided for @globalizationLanguage.
   ///
@@ -484,6 +388,30 @@ abstract class AppLocalizations {
   /// **'Language changes apply immediately. You do not need to restart the app.'**
   String get languageChangeImmediatelyHint;
 
+  /// No description provided for @networkUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Network unavailable. Actions will sync when the connection returns.'**
+  String get networkUnavailable;
+
+  /// No description provided for @networkOfflinePending.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline. {count} queued actions.'**
+  String networkOfflinePending(int count);
+
+  /// No description provided for @networkRecoveredReplaying.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection restored. Syncing {count} queued actions…'**
+  String networkRecoveredReplaying(int count);
+
+  /// No description provided for @networkSyncComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync complete'**
+  String get networkSyncComplete;
+
   /// No description provided for @orderFlowTitle.
   ///
   /// In en, this message translates to:
@@ -567,6 +495,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Order completed.'**
   String get orderMessageCompleted;
+
+  /// No description provided for @permissionMicrophone.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone'**
+  String get permissionMicrophone;
+
+  /// No description provided for @permissionCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get permissionCamera;
+
+  /// No description provided for @permissionPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get permissionPhotos;
+
+  /// No description provided for @permissionNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get permissionNotification;
+
+  /// No description provided for @permissionPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get permissionPhone;
+
+  /// No description provided for @permissionAudio.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio'**
+  String get permissionAudio;
+
+  /// No description provided for @permissionStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage'**
+  String get permissionStorage;
+
+  /// No description provided for @permissionWifi.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi'**
+  String get permissionWifi;
+
+  /// No description provided for @permissionBluetooth.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth'**
+  String get permissionBluetooth;
+
+  /// No description provided for @permissionLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get permissionLocation;
+
+  /// No description provided for @permissionGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission'**
+  String get permissionGeneric;
+
+  /// No description provided for @permissionOpenSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'{permission} permission is disabled. Please enable it in Settings.'**
+  String permissionOpenSettings(String permission);
 }
 
 class _AppLocalizationsDelegate

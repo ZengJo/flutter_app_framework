@@ -24,22 +24,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonRequestTimeout => '请求超时';
 
   @override
-  String get networkUnavailable => '网络不可用，操作将在恢复后同步';
-
-  @override
-  String networkOfflinePending(int count) {
-    return '离线中，已缓存 $count 条操作';
-  }
-
-  @override
-  String networkRecoveredReplaying(int count) {
-    return '网络已恢复，正在同步 $count 条操作…';
-  }
-
-  @override
-  String get networkSyncComplete => '同步完成';
-
-  @override
   String get errorLoginExpired => '登录已过期，请重新登录';
 
   @override
@@ -89,44 +73,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get errorIncorrectPassword => '密码错误';
-
-  @override
-  String get permissionMicrophone => '麦克风';
-
-  @override
-  String get permissionCamera => '相机';
-
-  @override
-  String get permissionPhotos => '相册';
-
-  @override
-  String get permissionNotification => '通知';
-
-  @override
-  String get permissionPhone => '电话';
-
-  @override
-  String get permissionAudio => '音频';
-
-  @override
-  String get permissionStorage => '存储';
-
-  @override
-  String get permissionWifi => 'Wi-Fi';
-
-  @override
-  String get permissionBluetooth => '蓝牙';
-
-  @override
-  String get permissionLocation => '定位';
-
-  @override
-  String get permissionGeneric => '权限';
-
-  @override
-  String permissionOpenSettings(String permission) {
-    return '$permission权限未开启，请前往设置';
-  }
 
   @override
   String get globalizationLanguage => '语言';
@@ -210,6 +156,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get languageChangeImmediatelyHint => '语言切换会立即生效，无需重新启动 App。';
 
   @override
+  String get networkUnavailable => '网络不可用，操作将在恢复后同步';
+
+  @override
+  String networkOfflinePending(int count) {
+    return '离线中，已缓存 $count 条操作';
+  }
+
+  @override
+  String networkRecoveredReplaying(int count) {
+    return '网络已恢复，正在同步 $count 条操作…';
+  }
+
+  @override
+  String get networkSyncComplete => '同步完成';
+
+  @override
   String get orderFlowTitle => '订单流程';
 
   @override
@@ -250,4 +212,42 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get orderMessageCompleted => '订单已完成。';
+
+  @override
+  String get permissionMicrophone => '麦克风';
+
+  @override
+  String get permissionCamera => '相机';
+
+  @override
+  String get permissionPhotos => '相册';
+
+  @override
+  String get permissionNotification => '通知';
+
+  @override
+  String get permissionPhone => '电话';
+
+  @override
+  String get permissionAudio => '音频';
+
+  @override
+  String get permissionStorage => '存储';
+
+  @override
+  String get permissionWifi => 'Wi-Fi';
+
+  @override
+  String get permissionBluetooth => '蓝牙';
+
+  @override
+  String get permissionLocation => '定位';
+
+  @override
+  String get permissionGeneric => '权限';
+
+  @override
+  String permissionOpenSettings(String permission) {
+    return '$permission权限未开启，请前往设置';
+  }
 }
